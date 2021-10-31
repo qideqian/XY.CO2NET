@@ -21,7 +21,7 @@ jobs:
       - run:
           # Update this line with the directory that contains your tests project file
           working_directory: ~/XY.CO2NET
-          name: Run tests
+          name: build
           command: |
             dotnet restore
             dotnet bulid

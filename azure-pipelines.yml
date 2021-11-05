@@ -32,22 +32,19 @@ steps:
   inputs:
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
-
-- task: NuGetCommand@2
+- task: DotNetCoreCLI@2
   inputs:
-    command: 'restore'
-    restoreSolution: '**/*.sln'
-    feedsToUse: 'select'
+    command: 'build'
 
-- task: NuGetCommand@2
+- task: DotNetCoreCLI@2
   inputs:
     command: 'pack'
     packagesToPack: '**/*.csproj'
     versioningScheme: 'off'
 
-- task: NuGetCommand@2
+- task: DotNetCoreCLI@2
   inputs:
     command: 'push'
-    packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg'
+    packagesToPush: '$(Build.ArtifactStagingDirectory)/*.nupkg'
     nuGetFeedType: 'internal'
-    publishVstsFeed: 'oy2eaukckjx3qvurxcjahmtdyk6m3rbeddhw4vjfvvno3m'
+    publishVstsFeed: '5df51c81-38b8-4ac3-896d-17507a2fc7cb/4730c2a1-b394-4999-95ea-652b2688314c'

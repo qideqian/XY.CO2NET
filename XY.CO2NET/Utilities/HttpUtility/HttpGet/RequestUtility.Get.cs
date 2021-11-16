@@ -33,6 +33,7 @@ namespace XY.CO2NET.HttpUtility
         private static HttpWebRequest HttpGet_Common_Net45(string url, CookieContainer cookieContainer = null, Encoding encoding = null, X509Certificate2 cer = null,
             string refererUrl = null, bool useAjax = false, int timeOut = Config.TIME_OUT)
         {
+            ServicePointManager.ServerCertificateValidationCallback = new RemoteCertificateValidationCallback(CheckValidationResult);
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
             request.Method = "GET";
             request.Timeout = timeOut;
@@ -86,6 +87,7 @@ namespace XY.CO2NET.HttpUtility
             string url, Encoding encoding = null)
         {
 #if NET45
+            ServicePointManager.ServerCertificateValidationCallback = new RemoteCertificateValidationCallback(CheckValidationResult);
             WebClient wc = new WebClient();
             wc.Proxy = _webproxy;
             wc.Encoding = encoding ?? Encoding.UTF8;
@@ -205,6 +207,7 @@ namespace XY.CO2NET.HttpUtility
             string url, Encoding encoding = null)
         {
 #if NET45
+            ServicePointManager.ServerCertificateValidationCallback = new RemoteCertificateValidationCallback(CheckValidationResult);
             WebClient wc = new WebClient();
             wc.Proxy = _webproxy;
             wc.Encoding = encoding ?? Encoding.UTF8;

@@ -14,7 +14,6 @@ using System.Web;
 #else
 using System.Net.Http;
 using System.Net.Http.Headers;
-using XY.CO2NET.Extensions;
 #endif
 
 namespace XY.CO2NET.HttpUtility
@@ -297,7 +296,7 @@ namespace XY.CO2NET.HttpUtility
             foreach (var kv in formData)
             {
                 i++;
-                sb.AppendFormat("{0}={1}", kv.Key, XY.CO2NET.Extensions.WebCodingExtensions.UrlEncode(kv.Value));
+                sb.AppendFormat("{0}={1}", kv.Key, WebCodingExtensions.UrlEncode(kv.Value));
                 if (i < formData.Count)
                 {
                     sb.Append("&");

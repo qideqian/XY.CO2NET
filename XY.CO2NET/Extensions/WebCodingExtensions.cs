@@ -2,7 +2,7 @@
 using System.Net;
 using System.Text;
 
-namespace XY.CO2NET.Extensions
+namespace XY
 {
     /// <summary>
     /// 用于网页的HTML、Url编码/解码

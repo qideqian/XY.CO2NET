@@ -30,9 +30,9 @@ namespace XY.CO2NET.Threads
                 {
                     //队列线程
                     {
-                        XYMessageQueueThreadUtility senparcMessageQueue = new XYMessageQueueThreadUtility();
-                        Thread senparcMessageQueueThread = new Thread(senparcMessageQueue.Run) { Name = "XYMessageQueue" };
-                        AsynThreadCollection.Add(senparcMessageQueueThread.Name, senparcMessageQueueThread);
+                        XYMessageQueueThreadUtility xyMessageQueue = new XYMessageQueueThreadUtility();
+                        Thread xyMessageQueueThread = new Thread(xyMessageQueue.Run) { Name = "XYMessageQueue" };
+                        AsynThreadCollection.Add(xyMessageQueueThread.Name, xyMessageQueueThread);
                     }
                     //其它后台线程
 

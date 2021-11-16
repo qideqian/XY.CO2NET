@@ -25,15 +25,15 @@ namespace XY.CO2NET.RegisterServices
 
         private RegisterService(XYSetting xySetting)
         {
-            //Senparc.CO2NET SDK 配置
+            //XY.CO2NET SDK 配置
             Config.XYSetting = xySetting ?? new XYSetting();
         }
 
 #if !NET45
         /// <summary>
-        /// 开始 Senparc.CO2NET SDK 初始化参数流程（.NET Core）
+        /// 开始 XY.CO2NET SDK 初始化参数流程（.NET Core）
         /// </summary>
-        /// <param name="senparcSetting"></param>
+        /// <param name="xySetting"></param>
         /// <returns></returns>
         public static RegisterService Start(XYSetting xySetting)
         {
@@ -46,7 +46,7 @@ namespace XY.CO2NET.RegisterServices
         }
 #else
         /// <summary>
-        /// 开始 Senparc.CO2NET SDK 初始化参数流程
+        /// 开始 XY.CO2NET SDK 初始化参数流程
         /// </summary>
         /// <returns></returns>
         public static RegisterService Start(XYSetting xySetting)

@@ -99,8 +99,6 @@ namespace XY.CO2NET.Cache
             disposed = true;
         }
 
-
-
         #region 同步方法
 
         /// <summary>

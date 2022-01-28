@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.31729.503
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32014.148
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XY.CO2NET", "XY.CO2NET\XY.CO2NET.csproj", "{15204D29-C8DE-4827-A2C3-FB301B019EF2}"
 EndProject
@@ -11,7 +11,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Cache", "Cache", "{6E8EF90A
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{851941B9-B437-4DA3-933D-3E27D9FA33E0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XY.CO2NETTests", "XY.CO2NETTests\XY.CO2NETTests.csproj", "{0DE3E9A4-73E5-4625-9EDB-06D8E6586F44}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XY.CO2NETTests", "XY.CO2NETTests\XY.CO2NETTests.csproj", "{0DE3E9A4-73E5-4625-9EDB-06D8E6586F44}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XY.SMS", "XY.SMS\XY.SMS.csproj", "{33D70F18-3A9A-4A8A-9FFA-81F6D5005E0A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -31,6 +33,10 @@ Global
 		{0DE3E9A4-73E5-4625-9EDB-06D8E6586F44}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0DE3E9A4-73E5-4625-9EDB-06D8E6586F44}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0DE3E9A4-73E5-4625-9EDB-06D8E6586F44}.Release|Any CPU.Build.0 = Release|Any CPU
+		{33D70F18-3A9A-4A8A-9FFA-81F6D5005E0A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{33D70F18-3A9A-4A8A-9FFA-81F6D5005E0A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{33D70F18-3A9A-4A8A-9FFA-81F6D5005E0A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{33D70F18-3A9A-4A8A-9FFA-81F6D5005E0A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0;netcoreapp3.1</TargetFrameworks>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Authors>QiDeQian</Authors>
+    <Company>山东新意软件科技有限公司</Company>
+    <Description>短信发送类库</Description>
+    <Copyright>ShanDongXinYi Copyright © 2021~2022</Copyright>
+    <PackageProjectUrl>https://github.com/qideqian/XY.CO2NET</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/qideqian/XY.CO2NET</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>SMS</PackageTags>
+    <PackageReleaseNotes>
+      v1.0.0.0 SMS
+    </PackageReleaseNotes>
+    <Version>1.0.3</Version>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="aliyun-net-sdk-dysmsapi20200427" Version="2.1.0" />
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="6.0.0" />
+    <PackageReference Include="XY.CO2NET" Version="1.0.2" />
+  </ItemGroup>
+
+</Project>

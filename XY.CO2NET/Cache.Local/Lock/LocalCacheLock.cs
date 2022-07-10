@@ -128,11 +128,13 @@ namespace XY.CO2NET.Cache
 
         public override async Task<ICacheLock> LockAsync()
         {
+            await Task.CompletedTask;
             return Lock();//此处使用同步方法，完成锁定
         }
 
         public override async Task UnLockAsync()
         {
+            await Task.CompletedTask;
             UnLock();
             return;
         }

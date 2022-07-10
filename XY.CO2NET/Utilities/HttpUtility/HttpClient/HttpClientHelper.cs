@@ -28,7 +28,7 @@ namespace XY.CO2NET.HttpUtility
             return contentType;
         }
 
-#if !NET45
+#if !NET48
         /// <summary>
         /// 获取 HttpClientHandler 对象
         /// </summary>

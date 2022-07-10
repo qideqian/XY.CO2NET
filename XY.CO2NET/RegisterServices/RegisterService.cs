@@ -29,7 +29,7 @@ namespace XY.CO2NET.RegisterServices
             Config.XYSetting = xySetting ?? new XYSetting();
         }
 
-#if !NET45
+#if !NET48
         /// <summary>
         /// 开始 Senparc.CO2NET SDK 初始化参数流程（.NET Core）
         /// </summary>

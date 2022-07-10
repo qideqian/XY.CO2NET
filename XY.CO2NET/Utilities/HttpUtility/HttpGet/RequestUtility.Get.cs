@@ -7,7 +7,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using XY.CO2NET.Helpers;
-#if NET45
+#if NET48
 using System.Web;
 #else
 using System.Net.Http;
@@ -25,7 +25,7 @@ namespace XY.CO2NET.HttpUtility
     {
         #region 公用静态方法
 
-#if NET45
+#if NET48
         /// <summary>
         /// .NET 4.5 版本的HttpWebRequest参数设置
         /// </summary>
@@ -50,7 +50,7 @@ namespace XY.CO2NET.HttpUtility
         }
 #endif
 
-#if !NET45
+#if !NET48
         /// <summary>
         /// .NET Core 版本的HttpWebRequest参数设置
         /// </summary>
@@ -85,7 +85,7 @@ namespace XY.CO2NET.HttpUtility
             IServiceProvider serviceProvider,
             string url, Encoding encoding = null)
         {
-#if NET45
+#if NET48
             WebClient wc = new WebClient();
             wc.Proxy = _webproxy;
             wc.Encoding = encoding ?? Encoding.UTF8;
@@ -115,7 +115,7 @@ namespace XY.CO2NET.HttpUtility
             string url, CookieContainer cookieContainer = null, Encoding encoding = null, X509Certificate2 cer = null,
             string refererUrl = null, bool useAjax = false, Dictionary<string, string> headerAddition = null, int timeOut = Config.TIME_OUT)
         {
-#if NET45
+#if NET48
             HttpWebRequest request = HttpGet_Common_Net45(url, cookieContainer, encoding, cer, refererUrl, useAjax, timeOut);
             HttpWebResponse response = (HttpWebResponse)request.GetResponse();
             if (cookieContainer != null)
@@ -138,7 +138,7 @@ namespace XY.CO2NET.HttpUtility
 #endif
         }
 
-#if NET45
+#if NET48
 
         /// <summary>
         /// 获取HttpWebResponse或HttpResponseMessage对象，本方法通常用于测试）
@@ -204,7 +204,7 @@ namespace XY.CO2NET.HttpUtility
             IServiceProvider serviceProvider,
             string url, Encoding encoding = null)
         {
-#if NET45
+#if NET48
             WebClient wc = new WebClient();
             wc.Proxy = _webproxy;
             wc.Encoding = encoding ?? Encoding.UTF8;
@@ -239,7 +239,7 @@ namespace XY.CO2NET.HttpUtility
             string url, CookieContainer cookieContainer = null, Encoding encoding = null, X509Certificate2 cer = null,
             string refererUrl = null, bool useAjax = false, Dictionary<string, string> headerAddition = null, int timeOut = Config.TIME_OUT)
         {
-#if NET45
+#if NET48
             HttpWebRequest request = HttpGet_Common_Net45(url, cookieContainer, encoding, cer, refererUrl, useAjax, timeOut);
             HttpWebResponse response = (HttpWebResponse)(await request.GetResponseAsync().ConfigureAwait(false));
             if (cookieContainer != null)
@@ -263,7 +263,7 @@ namespace XY.CO2NET.HttpUtility
 #endif
         }
 
-#if NET45
+#if NET48
         /// <summary>
         /// 获取HttpWebResponse或HttpResponseMessage对象，本方法通常用于测试）
         /// </summary>

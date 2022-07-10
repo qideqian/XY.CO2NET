@@ -125,7 +125,7 @@ namespace XY.CO2NET.Helpers
         {
             string retStr;
 
-#if NET45
+#if NET48
             MD5CryptoServiceProvider m5 = new MD5CryptoServiceProvider();
 #else
             MD5 m5 = MD5.Create();
@@ -262,7 +262,7 @@ namespace XY.CO2NET.Helpers
         public static byte[] AESEncrypt(byte[] inputdata, byte[] iv, string strKey)
         {
             //分组加密算法
-#if NET45
+#if NET48
             SymmetricAlgorithm des = Rijndael.Create();
 #else
             SymmetricAlgorithm des = Aes.Create();
@@ -293,7 +293,7 @@ namespace XY.CO2NET.Helpers
         /// <returns></returns>
         public static byte[] AESDecrypt(byte[] inputdata, byte[] iv, string strKey)
         {
-#if NET45
+#if NET48
             SymmetricAlgorithm des = Rijndael.Create();
 #else
             SymmetricAlgorithm des = Aes.Create();
@@ -361,7 +361,7 @@ namespace XY.CO2NET.Helpers
             Array.Copy(Encoding.UTF8.GetBytes(key.PadRight(bKey.Length)), bKey, bKey.Length);
 
             MemoryStream mStream = new MemoryStream(encryptedBytes);
-#if NET45
+#if NET48
             SymmetricAlgorithm aes = Rijndael.Create();
 #else
             SymmetricAlgorithm aes = Aes.Create();

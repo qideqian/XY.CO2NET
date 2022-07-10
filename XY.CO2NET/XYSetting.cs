@@ -53,7 +53,7 @@ namespace XY.CO2NET
 
         #endregion
 
-#if NET45
+#if NET48
         /// <summary>
         /// 从 Web.Config 文件自动生成 XYSetting
         /// </summary>

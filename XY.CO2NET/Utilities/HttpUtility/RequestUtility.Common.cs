@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using XY.CO2NET.Helpers;
 using XY.CO2NET.WebProxy;
-#if NET45
+#if NET48
 using System.Web;
 #else
 using System.Net.Http;
@@ -26,7 +26,7 @@ namespace XY.CO2NET.HttpUtility
     {
         #region 代理
 
-#if NET45
+#if NET48
         private static System.Net.WebProxy _webproxy = null;
         /// <summary>
         /// 设置Web代理
@@ -102,7 +102,7 @@ namespace XY.CO2NET.HttpUtility
             return true;
         }
 
-#if NET45
+#if NET48
         /// <summary>
         /// 设置HTTP头
         /// </summary>

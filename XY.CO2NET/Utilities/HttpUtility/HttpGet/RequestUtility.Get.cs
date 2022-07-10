@@ -206,7 +206,7 @@ namespace XY.CO2NET.HttpUtility
             IServiceProvider serviceProvider,
             string url, Encoding encoding = null)
         {
-#if NET45
+#if NET48
             WebClient wc = new WebClient();
             wc.Proxy = _webproxy;
             wc.Encoding = encoding ?? Encoding.UTF8;

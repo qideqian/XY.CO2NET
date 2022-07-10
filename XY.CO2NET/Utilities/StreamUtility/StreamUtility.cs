@@ -20,7 +20,7 @@ namespace XY.CO2NET.Utilities
             byte[] arr = new byte[stream.Length];
             stream.Position = 0;
             stream.Read(arr, 0, (int)stream.Length);
-#if NET45
+#if NET48
             return Convert.ToBase64String(arr, Base64FormattingOptions.None);
 #else
             return Convert.ToBase64String(arr);
@@ -75,7 +75,7 @@ namespace XY.CO2NET.Utilities
             byte[] arr = new byte[stream.Length];
             stream.Position = 0;
             await stream.ReadAsync(arr, 0, (int)stream.Length).ConfigureAwait(false);
-#if NET45
+#if NET48
             return Convert.ToBase64String(arr, Base64FormattingOptions.None);
 #else
             return Convert.ToBase64String(arr);

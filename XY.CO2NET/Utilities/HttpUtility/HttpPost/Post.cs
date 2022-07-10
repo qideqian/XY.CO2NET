@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using XY.CO2NET.Helpers;
 using System.Net.Http;
 
-#if NET45
+#if NET48
 using System.Security.Cryptography.X509Certificates;
 #else
 using Microsoft.Extensions.DependencyInjection;
@@ -43,7 +43,7 @@ namespace XY.CO2NET.HttpUtility
             string url, CookieContainer cookieContainer = null, Dictionary<string, string> fileDictionary = null,
             Dictionary<string, string> postDataDictionary = null,
             Encoding encoding = null,
-#if !NET45
+#if !NET48
             string certName = null,
 #else
             X509Certificate2 cer = null,
@@ -58,7 +58,7 @@ namespace XY.CO2NET.HttpUtility
                 string returnText = RequestUtility.HttpPost(
                     serviceProvider,
                     url, cookieContainer, ms, fileDictionary, null, encoding,
-#if !NET45
+#if !NET48
                     certName,
 #else
                     cer,
@@ -91,7 +91,7 @@ namespace XY.CO2NET.HttpUtility
         public static T PostGetJson<T>(
             IServiceProvider serviceProvider,
             string url, CookieContainer cookieContainer = null, Stream fileStream = null, Encoding encoding = null,
-#if !NET45
+#if !NET48
             string certName = null,
 #else
             X509Certificate2 cer = null,
@@ -102,7 +102,7 @@ namespace XY.CO2NET.HttpUtility
             string returnText = RequestUtility.HttpPost(
                 serviceProvider,
                 url, cookieContainer, fileStream, null, null, encoding,
-#if !NET45
+#if !NET48
                 certName,
 #else
                 cer,
@@ -134,7 +134,7 @@ namespace XY.CO2NET.HttpUtility
         public static T PostGetJson<T>(
             IServiceProvider serviceProvider,
             string url, CookieContainer cookieContainer = null, Dictionary<string, string> formData = null, Encoding encoding = null,
-#if !NET45
+#if !NET48
             string certName = null,
 #else
             X509Certificate2 cer = null,
@@ -144,7 +144,7 @@ namespace XY.CO2NET.HttpUtility
             string returnText = RequestUtility.HttpPost(
                 serviceProvider,
                 url, cookieContainer, formData, encoding,
-#if !NET45
+#if !NET48
                 certName,
 #else
                 cer,
@@ -168,7 +168,7 @@ namespace XY.CO2NET.HttpUtility
             IServiceProvider serviceProvider,
             string url, string data, Stream stream)
         {
-#if NET45
+#if NET48
             WebClient wc = new WebClient();
             var file = wc.UploadData(url, "POST", Encoding.UTF8.GetBytes(string.IsNullOrEmpty(data) ? "" : data));
             stream.Write(file, 0, file.Length);
@@ -212,7 +212,7 @@ namespace XY.CO2NET.HttpUtility
             IServiceProvider serviceProvider,
             string url, CookieContainer cookieContainer = null, Dictionary<string, string> fileDictionary = null, Dictionary<string, string> postDataDictionary = null,
             Encoding encoding = null,
-#if !NET45
+#if !NET48
             string certName = null,
 #else
             X509Certificate2 cer = null,
@@ -227,7 +227,7 @@ namespace XY.CO2NET.HttpUtility
                 string returnText = await RequestUtility.HttpPostAsync(
                     serviceProvider,
                     url, cookieContainer, ms, fileDictionary, null, encoding,
-#if !NET45
+#if !NET48
                     certName,
 #else
                     cer,
@@ -258,7 +258,7 @@ namespace XY.CO2NET.HttpUtility
         public static async Task<T> PostGetJsonAsync<T>(
             IServiceProvider serviceProvider,
             string url, CookieContainer cookieContainer = null, Stream fileStream = null, Encoding encoding = null,
-#if !NET45
+#if !NET48
             string certName = null,
 #else
             X509Certificate2 cer = null,
@@ -269,7 +269,7 @@ namespace XY.CO2NET.HttpUtility
             string returnText = await RequestUtility.HttpPostAsync(
                 serviceProvider,
                 url, cookieContainer, fileStream, null, null, encoding,
-#if !NET45
+#if !NET48
                 certName,
 #else
                 cer,
@@ -301,7 +301,7 @@ namespace XY.CO2NET.HttpUtility
         public static async Task<T> PostGetJsonAsync<T>(
             IServiceProvider serviceProvider,
             string url, CookieContainer cookieContainer = null, Dictionary<string, string> formData = null, Encoding encoding = null,
-#if !NET45
+#if !NET48
             string certName = null,
 #else
             X509Certificate2 cer = null,
@@ -311,7 +311,7 @@ namespace XY.CO2NET.HttpUtility
             string returnText = await RequestUtility.HttpPostAsync(
                 serviceProvider,
                 url, cookieContainer, formData, encoding,
-#if !NET45
+#if !NET48
                 certName,
 #else
                 cer,
@@ -334,7 +334,7 @@ namespace XY.CO2NET.HttpUtility
             IServiceProvider serviceProvider,
             string url, string data, Stream stream)
         {
-#if NET45
+#if NET48
             WebClient wc = new WebClient();
             var fileBytes = await wc.UploadDataTaskAsync(url, "POST", Encoding.UTF8.GetBytes(string.IsNullOrEmpty(data) ? "" : data)).ConfigureAwait(false);
             await stream.WriteAsync(fileBytes, 0, fileBytes.Length).ConfigureAwait(false);//也可以分段写入

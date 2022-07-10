@@ -1,4 +1,4 @@
-﻿#if NET45
+﻿#if NET48
 using System.Net;
 #else
 using System.Net.Http;
@@ -11,7 +11,7 @@ namespace XY.CO2NET.HttpUtility
     /// </summary>
     public class XYHttpResponse
     {
-#if NET45
+#if NET48
         public HttpWebResponse Result { get; set; }
 
         public XYHttpResponse(HttpWebResponse httpWebResponse)

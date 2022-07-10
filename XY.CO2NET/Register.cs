@@ -80,7 +80,7 @@ namespace XY.CO2NET
         /// <summary>
         /// 开始 XY.CO2NET 初始化参数流程
         /// </summary>
-        /// <param name="senparcSetting">XYSetting 对象</param>
+        /// <param name="xySetting">XYSetting 对象</param>
         /// <param name="registerConfigure">RegisterService 设置</param>
         /// <param name="autoScanExtensionCacheStrategies">是否自动扫描全局的扩展缓存（会增加系统启动时间）</param>
         /// <param name="extensionCacheStrategiesFunc"><para>需要手动注册的扩展缓存策略</para>
@@ -88,13 +88,13 @@ namespace XY.CO2NET
         /// <para>如果设置为 null（注意：不适委托返回 null，是整个委托参数为 null），则自动使用反射扫描所有可能存在的扩展缓存策略</para></param>
         /// <returns></returns>
         public static IRegisterService UseXYGlobal(
-            XYSetting senparcSetting,
+            XYSetting xySetting,
             Action<RegisterService> registerConfigure,
             bool autoScanExtensionCacheStrategies = false,
             Func<IList<IDomainExtensionCacheStrategy>> extensionCacheStrategiesFunc = null)
         {
             //初始化全局 RegisterService 对象，并储存 XYSetting 信息
-            var register = RegisterService.Start(senparcSetting);
+            var register = RegisterService.Start(xySetting);
             RegisterService.Object = register;
 
             registerConfigure?.Invoke(register);

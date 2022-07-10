@@ -20,6 +20,10 @@ namespace XY.CO2NET.MessageQueue
         /// </summary>
         public Action Action { get; set; }
         /// <summary>
+        /// Action是否执行完毕
+        /// </summary>
+        public bool Completed { get; set; }
+        /// <summary>
         /// 此实例对象的创建时间
         /// </summary>
         public DateTimeOffset AddTime { get; set; }

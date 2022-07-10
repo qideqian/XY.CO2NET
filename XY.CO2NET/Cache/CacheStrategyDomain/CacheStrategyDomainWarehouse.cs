@@ -127,7 +127,7 @@ namespace XY.CO2NET.Cache
                                 }
                                 catch (Exception ex)
                                 {
-                                    XYTrace.SendCustomLog("UseSenparcGlobal() 自动扫描程序集异常：" + a.FullName, ex.ToString());
+                                    XYTrace.SendCustomLog("UseXYGlobal() 自动扫描程序集异常：" + a.FullName, ex.ToString());
                                     return new List<Type>();//不能 return null
                                 }
                             });

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using XY.CO2NET.Trace;
 
 namespace XY.CO2NET.MessageQueue
 {
@@ -53,7 +54,15 @@ namespace XY.CO2NET.MessageQueue
                 while (!string.IsNullOrEmpty(key))
                 {
                     var mqItem = mq.GetItem(key); //获取任务项
-                    mqItem.Action(); //执行
+                    try
+                    {
+                        mqItem.Action(); //执行
+                    }
+                    catch (Exception ex)
+                    {
+                        XYTrace.Log($"OperationQueue列队操作失败，异常：{ex.Message}\r\n内部异常：{ex.InnerException}\r\n堆栈信息：{ex.StackTrace}");
+                    }
+                    mqItem.Completed = true;//调整执行状态
                     mq.Remove(key, out XYMessageQueueItem value); //清除
                     key = mq.GetCurrentKey(); //获取最新的Key
                 }

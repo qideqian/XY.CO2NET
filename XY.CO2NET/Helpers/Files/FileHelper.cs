@@ -53,12 +53,12 @@ namespace XY.CO2NET.Helpers
         {
             try
             {
-                if (!System.IO.File.Exists(filePath)) // The path might also be invalid.
+                if (!File.Exists(filePath)) // The path might also be invalid.
                 {
                     return false;
                 }
 
-                using (System.IO.FileStream stream = new System.IO.FileStream(filePath, System.IO.FileMode.Open))
+                using (FileStream stream = new FileStream(filePath, FileMode.Open))
                 {
                     return false;
                 }
@@ -90,12 +90,12 @@ namespace XY.CO2NET.Helpers
         /// <param name="type">SHA1 或 MD5，必须为大写</param>
         /// <param name="toUpper">是否返回大写结果，true：大写，false：小写</param>
         /// <param name="encoding">默认为：utf8</param>
-        public static string GetFileHash(string filePath, string type = "SHA1", bool toUpper = true, Encoding encoding = null)
+        public static string GetFileHash(string filePath, string type = "SHA1", bool toUpper = true)
         {
-            var stream = new FileStream(filePath, FileMode.Open);
+            using var stream = GetFileStream(filePath);
             try
             {
-                return GetFileHash(filePath, type, toUpper, encoding);
+                return GetFileHash(stream, type, toUpper);
             }
             catch (Exception)
             {

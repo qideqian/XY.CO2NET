@@ -1,5 +1,5 @@
 ﻿
-#if !NET45
+#if !NET48
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
 #endif
@@ -14,7 +14,7 @@ namespace XY.CO2NET.Cache
     /// </summary>
     public static class LocalObjectCacheHelper
     {
-#if NET45
+#if NET48
         /// <summary>
         /// 所有数据集合的列表
         /// </summary>

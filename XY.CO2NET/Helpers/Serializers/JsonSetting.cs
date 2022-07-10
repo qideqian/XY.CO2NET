@@ -138,7 +138,7 @@ namespace XY.CO2NET.Helpers
         {
             var property = base.CreateProperty(member, memberSerialization);
 
-#if NET45
+#if NET48
             //IgnoreNull标注的字段根据IgnoreNulls设定是否序列化
             var ignoreNull = member.GetCustomAttribute<JsonSetting.IgnoreNullAttribute>();
             if (ignoreNull != null || IgnoreNulls)

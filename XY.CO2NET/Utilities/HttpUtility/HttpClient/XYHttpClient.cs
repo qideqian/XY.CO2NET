@@ -1,4 +1,4 @@
-﻿#if !NET45
+﻿#if !NET48
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Net.Http.Headers;
 using System;

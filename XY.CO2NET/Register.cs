@@ -76,7 +76,7 @@ namespace XY.CO2NET
             return registerService;
         }
 
-#if !NET45
+#if !NET48
         /// <summary>
         /// 开始 XY.CO2NET 初始化参数流程
         /// </summary>

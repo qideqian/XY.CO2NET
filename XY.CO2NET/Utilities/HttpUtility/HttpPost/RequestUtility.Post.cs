@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using XY.CO2NET.Helpers;
 
-#if !NET45
+#if !NET48
 using System.Net.Http;
 using System.Net.Http.Headers;
 using XY.CO2NET.Exceptions;
@@ -22,7 +22,7 @@ namespace XY.CO2NET.HttpUtility
     public static partial class RequestUtility
     {
         #region 静态公共方法
-#if NET45
+#if NET48
         /// <summary>
         /// 给.NET Framework使用的HttpPost请求公共设置方法
         /// </summary>
@@ -166,7 +166,7 @@ namespace XY.CO2NET.HttpUtility
         }
 #endif
 
-#if !NET45
+#if !NET48
         /// <summary>
         /// 给.NET Core使用的HttpPost请求公共设置方法
         /// </summary>
@@ -324,7 +324,7 @@ namespace XY.CO2NET.HttpUtility
             IServiceProvider serviceProvider,
             string url, CookieContainer cookieContainer = null, Dictionary<string, string> formData = null,
             Encoding encoding = null,
-#if !NET45
+#if !NET48
             string certName = null,
 #else
             X509Certificate2 cer = null,
@@ -340,7 +340,7 @@ namespace XY.CO2NET.HttpUtility
             return HttpPost(
                 serviceProvider,
                 url, cookieContainer, ms, null, null, encoding,
-#if !NET45
+#if !NET48
                 certName,
 #else
                 cer,
@@ -370,7 +370,7 @@ namespace XY.CO2NET.HttpUtility
             IServiceProvider serviceProvider,
             string url, CookieContainer cookieContainer = null, Stream postStream = null,
             Dictionary<string, string> fileDictionary = null, string refererUrl = null, Encoding encoding = null,
-#if !NET45
+#if !NET48
             string certName = null,
 #else
             X509Certificate2 cer = null,
@@ -386,7 +386,7 @@ namespace XY.CO2NET.HttpUtility
             var xyResponse = HttpResponsePost(
                 serviceProvider,
                 url, cookieContainer, postStream, fileDictionary, refererUrl, encoding,
-#if !NET45
+#if !NET48
                 certName,
 #else
                 cer,
@@ -395,7 +395,7 @@ namespace XY.CO2NET.HttpUtility
 
             var response = xyResponse.Result;//获取响应信息
 
-#if NET45
+#if NET48
             response.Cookies = cookieContainer.GetCookies(response.ResponseUri);
             using (Stream responseStream = response.GetResponseStream() ?? new MemoryStream())
             {
@@ -442,7 +442,7 @@ namespace XY.CO2NET.HttpUtility
             IServiceProvider serviceProvider,
             string url, CookieContainer cookieContainer = null, Stream postStream = null,
             Dictionary<string, string> fileDictionary = null, string refererUrl = null, Encoding encoding = null,
-#if !NET45
+#if !NET48
             string certName = null,
 #else
             X509Certificate2 cer = null,
@@ -461,7 +461,7 @@ namespace XY.CO2NET.HttpUtility
                 postStream = new MemoryStream();
             }
 
-#if NET45
+#if NET48
             var request = HttpPost_Common_Net45(url, cookieContainer, postStream, fileDictionary, refererUrl, encoding, cer, useAjax, headerAddition, timeOut, checkValidationResult, contentType);
 
             #region 输入二进制流
@@ -523,7 +523,7 @@ namespace XY.CO2NET.HttpUtility
             IServiceProvider serviceProvider,
             string url, CookieContainer cookieContainer = null,
             Dictionary<string, string> formData = null, Encoding encoding = null,
-#if !NET45
+#if !NET48
             string certName = null,
 #else
             X509Certificate2 cer = null,
@@ -539,7 +539,7 @@ namespace XY.CO2NET.HttpUtility
             return await HttpPostAsync(
                 serviceProvider,
                 url, cookieContainer, ms, null, null, encoding,
-#if !NET45
+#if !NET48
                 certName,
 #else
                 cer,
@@ -569,7 +569,7 @@ namespace XY.CO2NET.HttpUtility
             IServiceProvider serviceProvider,
             string url, CookieContainer cookieContainer = null, Stream postStream = null,
             Dictionary<string, string> fileDictionary = null, string refererUrl = null, Encoding encoding = null,
-#if !NET45
+#if !NET48
             string certName = null,
 #else
             X509Certificate2 cer = null,
@@ -589,7 +589,7 @@ namespace XY.CO2NET.HttpUtility
             var xyResponse = await HttpResponsePostAsync(
                 serviceProvider,
                 url, cookieContainer, postStream, fileDictionary, refererUrl, encoding,
-#if !NET45
+#if !NET48
                 certName,
 #else
                 cer,
@@ -598,7 +598,7 @@ namespace XY.CO2NET.HttpUtility
 
             var response = xyResponse.Result;//获取响应信息
 
-#if NET45
+#if NET48
             if (cookieContainer != null)
             {
                 response.Cookies = cookieContainer.GetCookies(response.ResponseUri);
@@ -641,7 +641,7 @@ namespace XY.CO2NET.HttpUtility
             IServiceProvider serviceProvider,
             string url, CookieContainer cookieContainer = null, Stream postStream = null,
             Dictionary<string, string> fileDictionary = null, string refererUrl = null, Encoding encoding = null,
-#if !NET45
+#if !NET48
             string certName = null,
 #else
             X509Certificate2 cer = null,
@@ -660,7 +660,7 @@ namespace XY.CO2NET.HttpUtility
                 postStream = new MemoryStream();
             }
 
-#if NET45
+#if NET48
             var request = HttpPost_Common_Net45(url, cookieContainer, postStream, fileDictionary, refererUrl, encoding, cer, useAjax, headerAddition, timeOut, checkValidationResult, contentType);
 
             #region 输入二进制流

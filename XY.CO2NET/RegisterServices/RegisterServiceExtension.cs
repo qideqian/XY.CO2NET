@@ -4,7 +4,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Net.Security;
 using System.IO;
 
-#if !NET45
+#if !NET48
 using System.Net.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,7 +17,7 @@ namespace XY.CO2NET.RegisterServices
     /// </summary>
     public static class RegisterServiceExtension
     {
-#if !NET45
+#if !NET48
         /// <summary>
         /// 是否已经进行过全局注册
         /// </summary>

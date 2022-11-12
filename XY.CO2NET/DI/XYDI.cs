@@ -21,8 +21,6 @@ namespace XY.CO2NET
         /// </summary>
         public static IServiceCollection GlobalServiceCollection { get; set; }
 
-        private static IServiceProvider _globalServiceProvider;
-
         /// <summary>
         /// 从 GlobalServiceCollection 重新 Build，生成新的 IServiceProvider
         /// </summary>

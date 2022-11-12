@@ -133,6 +133,33 @@ namespace XY.CO2NET.Helpers
                     throw new ArgumentOutOfRangeException(nameof(type));
             }
         }
+
+        /// <summary>
+        /// 获取文件的 HASH 值
+        /// </summary>
+        /// <param name="bytes"></param>
+        /// <param name="type">SHA1 或 MD5 或 CRC32，必须为大写</param>
+        /// <param name="toUpper">是否返回大写结果，true：大写，false：小写</param>
+        public static string GetFileHash(byte[] bytes, string type = "SHA1", bool toUpper = true)
+        {
+            switch (type)
+            {
+                case "SHA1":
+                    {
+                        return EncryptHelper.GetSha1(bytes, toUpper);
+                    }
+                case "MD5":
+                    {
+                        return EncryptHelper.GetMD5(bytes, toUpper);
+                    }
+                case "CRC32":
+                    {
+                        return EncryptHelper.GetCrc32(bytes, toUpper);
+                    }
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(type));
+            }
+        }
         #endregion
     }
 }

@@ -90,6 +90,33 @@ namespace XY.CO2NET.Helpers
         }
 
         /// <summary>
+        /// 采用SHA-1算法加密流（默认大写）
+        /// </summary>
+        /// <param name="bytes">byte[]</param>
+        /// <param name="toUpper">是否返回大写结果，true：大写，false：小写</param>
+        /// <returns></returns>
+        public static string GetSha1(byte[] bytes, bool toUpper = true)
+        {
+            var sha1 = SHA1.Create();
+            var sha1Arr = sha1.ComputeHash(bytes);
+            StringBuilder enText = new StringBuilder();
+            foreach (var b in sha1Arr)
+            {
+                enText.AppendFormat("{0:x2}", b);
+            }
+
+            var result = enText.ToString();
+            if (!toUpper)
+            {
+                return result;
+            }
+            else
+            {
+                return result.ToUpper();
+            }
+        }
+
+        /// <summary>
         /// HMAC SHA256 加密
         /// </summary>
         /// <param name="message">加密消息原文。当为小程序SessionKey签名提供服务时，其中message为本次POST请求的数据包（通常为JSON）。特别地，对于GET请求，message等于长度为0的字符串。</param>
@@ -193,6 +220,25 @@ namespace XY.CO2NET.Helpers
         }
 
         /// <summary>
+        /// 获取MD5签名结果
+        /// </summary>
+        /// <param name="bytes">byte[]</param>
+        /// <param name="toUpper">是否返回大写结果，true：大写，false：小写</param>
+        /// <returns></returns>
+        public static string GetMD5(byte[] bytes , bool toUpper = true)
+        {
+            MD5 md5 = new MD5CryptoServiceProvider();
+            byte[] ret = md5.ComputeHash(bytes);
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < ret.Length; i++)
+            {
+                sb.Append(ret[i].ToString(toUpper ? "X2" : "x2"));
+            }
+            string md5str = sb.ToString();
+            return md5str;
+        }
+
+        /// <summary>
         /// 获取小写的MD5签名结果
         /// </summary>
         /// <param name="encypStr">需要加密的字符串</param>
@@ -232,13 +278,33 @@ namespace XY.CO2NET.Helpers
         /// <summary>
         /// 获取 CRC32 加密字符串
         /// </summary>
-        /// <param name="encypStr">需要加密的字符串</param>
+        /// <param name="stream">流</param>
         /// <param name="toUpper">是否返回大写结果，true：大写，false：小写</param>
         /// <returns></returns>
         public static string GetCrc32(Stream stream, bool toUpper = true)
         {
             Crc32 calculator = new Crc32();
             byte[] buffer = calculator.ComputeHash(stream);
+            calculator.Clear();
+            //将字节数组转换成十六进制的字符串形式
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < buffer.Length; i++)
+            {
+                sb.Append(buffer[i].ToString("x2"));
+            }
+            return toUpper ? toUpper.ToString().ToUpper() : sb.ToString();
+        }
+
+        /// <summary>
+        /// 获取 CRC32 加密字符串
+        /// </summary>
+        /// <param name="bytes">流</param>
+        /// <param name="toUpper">是否返回大写结果，true：大写，false：小写</param>
+        /// <returns></returns>
+        public static string GetCrc32(byte[] bytes, bool toUpper = true)
+        {
+            Crc32 calculator = new Crc32();
+            byte[] buffer = calculator.ComputeHash(bytes);
             calculator.Clear();
             //将字节数组转换成十六进制的字符串形式
             StringBuilder sb = new StringBuilder();

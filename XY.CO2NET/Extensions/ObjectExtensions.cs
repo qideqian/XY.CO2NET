@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace XY
+namespace System
 {
     /// <summary>
     /// 扩展方法

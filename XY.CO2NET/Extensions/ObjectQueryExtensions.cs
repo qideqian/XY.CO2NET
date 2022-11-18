@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Linq.Expressions;
 
-namespace XY.CO2NET.Extensions
+namespace System.Linq
 {
     public static class ObjectQueryExtensions
     {
@@ -17,7 +12,7 @@ namespace XY.CO2NET.Extensions
         /// <param name="orderBy"></param>
         /// <param name="isAscending">是否升序排列</param>
         /// <returns></returns>
-        public static IOrderedQueryable<T> OrderBy<T, TK>(this IQueryable<T> obj, Expression<Func<T, TK>> orderBy, bool isAscending = true) where T : class
+        public static IOrderedQueryable<T> OrderBy<T, TK>(this IQueryable<T> obj, Expression<Func<T, TK>> orderBy, bool isAscending) where T : class
         {
             if (orderBy == null)
                 throw new Exception("OrderBy can not be Null！");
@@ -33,7 +28,7 @@ namespace XY.CO2NET.Extensions
         /// <param name="ThenBy"></param>
         /// <param name="isAscending">是否升序排列</param>
         /// <returns></returns>
-        public static IOrderedQueryable<T> ThenBy<T, TK>(this IOrderedQueryable<T> obj, Expression<Func<T, TK>> thenBy, bool isAscending = true) where T : class
+        public static IOrderedQueryable<T> ThenBy<T, TK>(this IOrderedQueryable<T> obj, Expression<Func<T, TK>> thenBy, bool isAscending) where T : class
         {
             if (thenBy == null)
                 throw new Exception("OrderBy can not be Null！");

@@ -20,7 +20,7 @@
   <ItemGroup>
     <PackageReference Include="aliyun-net-sdk-dysmsapi20200427" Version="2.1.0" />
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="6.0.0" />
-    <PackageReference Include="XY.CO2NET" Version="1.0.2" />
+    <PackageReference Include="XY.CO2NET" Version="1.0.8" />
   </ItemGroup>
 
 </Project>

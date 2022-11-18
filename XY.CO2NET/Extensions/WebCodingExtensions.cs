@@ -1,8 +1,7 @@
-﻿using System;
-using System.Net;
+﻿using System.Net;
 using System.Text;
 
-namespace XY
+namespace System
 {
     /// <summary>
     /// 用于网页的HTML、Url编码/解码

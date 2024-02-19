@@ -70,7 +70,7 @@ namespace XY.CO2NET.HttpUtility
             {
                 IEnumerable<string> setCookieHeaders = null;
                 if (cookieContainer != null && response.Headers != null &&
-                    response.Headers.Contains(Microsoft.Net.Http.Headers.HeaderNames.SetCookie) && response.Headers.TryGetValues(Microsoft.Net.Http.Headers.HeaderNames.SetCookie, out setCookieHeaders))
+                    response.Headers.Contains("Set-Cookie") && response.Headers.TryGetValues("Set-Cookie", out setCookieHeaders))
                 {
                     if (setCookieHeaders == null)
                     {

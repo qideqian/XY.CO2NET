@@ -1,6 +1,5 @@
 ﻿#if !NET45
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Net.Http.Headers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -54,7 +53,7 @@ namespace XY.CO2NET.HttpUtility
                 return;
             }
             var cookieHeader = cookieContainer.GetCookieHeader(uri);
-            Client.DefaultRequestHeaders.Add(HeaderNames.Cookie, cookieHeader);
+            Client.DefaultRequestHeaders.Add("Cookie", cookieHeader);
         }
 
         ///// <summary>

@@ -1,7 +1,6 @@
 ﻿using StackExchange.Redis;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace XY.CO2NET.Cache.Redis

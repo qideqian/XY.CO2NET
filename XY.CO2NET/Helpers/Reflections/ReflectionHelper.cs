@@ -1,9 +1,23 @@
-﻿using XY.CO2NET.Trace;
+﻿
+/* 项目“XY.CO2NET (NET45)”的未合并的更改
+在此之前:
+using XY.CO2NET.Trace;
 using System;
-using System.Collections.Generic;
+在此之后:
+using System;
+*/
+
+/* 项目“XY.CO2NET (net6.0)”的未合并的更改
+在此之前:
+using XY.CO2NET.Trace;
+using System;
+在此之后:
+using System;
+*/
+using System;
 using System.Linq;
 using System.Reflection;
-using System.Text;
+using XY.CO2NET.Trace;
 
 namespace XY.CO2NET.Helpers
 {

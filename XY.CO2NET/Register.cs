@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using XY.CO2NET.Cache;
 using XY.CO2NET.RegisterServices;
 using XY.CO2NET.Threads;

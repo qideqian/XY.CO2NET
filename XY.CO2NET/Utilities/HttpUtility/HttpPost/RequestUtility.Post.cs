@@ -209,8 +209,8 @@ namespace XY.CO2NET.HttpUtility
             HttpClient client = xyHttpClient.Client;
             HttpClientHeader(client, refererUrl, useAjax, headerAddition, timeOut);
 
-			#region 处理Form表单文件上传
-			var formUploadFile = fileDictionary != null && fileDictionary.Count > 0;//是否用Form上传文件
+            #region 处理Form表单文件上传
+            var formUploadFile = fileDictionary != null && fileDictionary.Count > 0;//是否用Form上传文件
             if (formUploadFile)
             {
                 contentType = "multipart/form-data";
@@ -294,7 +294,7 @@ namespace XY.CO2NET.HttpUtility
                 //去掉注释以测试Request.Body为空的情况
                 //hc.Headers.ContentType = new MediaTypeHeaderValue("application/x-www-form-urlencoded");
             }
-        #endregion
+            #endregion
             if (!string.IsNullOrEmpty(refererUrl))
             {
                 client.DefaultRequestHeaders.Referrer = new Uri(refererUrl);

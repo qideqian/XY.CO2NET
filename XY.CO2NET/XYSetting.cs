@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace XY.CO2NET
+﻿namespace XY.CO2NET
 {
     /// <summary>
     /// CO2NET 全局设置

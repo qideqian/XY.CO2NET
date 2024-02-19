@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace XY.CO2NET
 {
@@ -10,7 +8,7 @@ namespace XY.CO2NET
     public class Config
     {
         // TODO:完善  在 startup.cs 中运行 RegisterServiceExtension.AddXYGlobalServices() 即可自动注入
- 
+
         /// <summary>
         /// <para>全局配置</para>
         /// </summary>

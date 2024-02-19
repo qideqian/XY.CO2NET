@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace XY.SMS.SmsPlatform
+﻿namespace XY.SMS.SmsPlatform
 {
     /// <summary>
     /// 短信平台类型

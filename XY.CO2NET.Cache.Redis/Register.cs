@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace XY.CO2NET.Cache.Redis
+﻿namespace XY.CO2NET.Cache.Redis
 {
     /// <summary>
     /// Redis 注册

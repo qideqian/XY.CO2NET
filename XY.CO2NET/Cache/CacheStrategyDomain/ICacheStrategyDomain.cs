@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace XY.CO2NET.Cache
+﻿namespace XY.CO2NET.Cache
 {
     /// <summary>
     /// <para>扩展领域缓存策略</para>

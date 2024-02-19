@@ -1,10 +1,21 @@
-﻿using XY.CO2NET.HttpUtility;
+﻿
+/* 项目“XY.CO2NET (NET45)”的未合并的更改
+在此之前:
+using XY.CO2NET.HttpUtility;
 using System;
-using System.Collections.Generic;
+在此之后:
+using System;
+*/
+
+/* 项目“XY.CO2NET (net6.0)”的未合并的更改
+在此之前:
+using XY.CO2NET.HttpUtility;
+using System;
+在此之后:
+using System;
+*/
+using System;
 using System.IO;
-using System.IO.Pipes;
-using System.Linq;
-using System.Runtime.InteropServices.ComTypes;
 using System.Security.Cryptography;
 using System.Text;
 

@@ -6,7 +6,6 @@ using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
-using XY.CO2NET.Helpers;
 #if NET45
 using System.Web;
 #else
@@ -282,7 +281,7 @@ namespace XY.CO2NET.HttpUtility
     string refererUrl = null, bool useAjax = false, int timeOut = Config.TIME_OUT)
         {
             HttpWebRequest request = HttpGet_Common_Net45(url, cookieContainer, encoding, cer, refererUrl, useAjax, timeOut);
-            HttpWebResponse response =  (HttpWebResponse)(await request.GetResponseAsync().ConfigureAwait(false));
+            HttpWebResponse response = (HttpWebResponse)(await request.GetResponseAsync().ConfigureAwait(false));
             if (cookieContainer != null)
             {
                 response.Cookies = cookieContainer.GetCookies(response.ResponseUri);

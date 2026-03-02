@@ -1,8 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Dynamic;
+﻿using System.Dynamic;
 
-namespace XY
+namespace System.Collections.Generic
 {
     /// <summary>
     /// IDictionary扩展方法

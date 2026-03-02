@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-#if !NET45
+#if !NET48
 using Microsoft.Extensions.Caching.Memory;
 #endif
 
@@ -15,7 +15,7 @@ namespace XY.CO2NET.Cache
     {
         #region 数据源
 
-#if NET45
+#if NET48
         private System.Web.Caching.Cache _cache = LocalObjectCacheHelper.LocalObjectCache;
 #else
         private IMemoryCache _cache = LocalObjectCacheHelper.LocalObjectCache;
@@ -69,7 +69,7 @@ namespace XY.CO2NET.Cache
 
             var finalKey = base.GetFinalKey(key, isFullKey);
 
-#if NET45
+#if NET48
             _cache[finalKey] = value;
 #else
             var newKey = !CheckExisted(finalKey, true);
@@ -107,7 +107,7 @@ namespace XY.CO2NET.Cache
             var cacheKey = GetFinalKey(key, isFullKey);
             _cache.Remove(cacheKey);
 
-#if !NET45
+#if !NET48
             //移除key
             var keyStoreFinalKey = LocalObjectCacheHelper.GetKeyStoreKey(this);
             if (CheckExisted(keyStoreFinalKey, true))
@@ -135,7 +135,7 @@ namespace XY.CO2NET.Cache
 
             var cacheKey = GetFinalKey(key, isFullKey);
 
-#if NET45
+#if NET48
             return _cache[cacheKey];
 #else
             return _cache.Get(cacheKey);
@@ -161,7 +161,7 @@ namespace XY.CO2NET.Cache
                 //InsertToCache(key, new ContainerItemCollection());
             }
             var cacheKey = GetFinalKey(key, isFullKey);
-#if NET45
+#if NET48
             return (T)_cache[cacheKey];
 #else
             return _cache.Get<T>(cacheKey);
@@ -171,7 +171,7 @@ namespace XY.CO2NET.Cache
         public IDictionary<string, object> GetAll()
         {
             IDictionary<string, object> data = new Dictionary<string, object>();
-#if NET45
+#if NET48
             IDictionaryEnumerator cacheEnum = System.Web.HttpRuntime.Cache.GetEnumerator();
 
             while (cacheEnum.MoveNext())
@@ -198,7 +198,7 @@ namespace XY.CO2NET.Cache
         {
             var cacheKey = GetFinalKey(key, isFullKey);
 
-#if NET45
+#if NET48
             return _cache.Get(cacheKey) != null;
 #else
             return _cache.Get(cacheKey) != null;
@@ -207,7 +207,7 @@ namespace XY.CO2NET.Cache
 
         public long GetCount()
         {
-#if NET45
+#if NET48
             return _cache.Count;
 #else
             var keyStoreFinalKey = LocalObjectCacheHelper.GetKeyStoreKey(this);

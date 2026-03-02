@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using System.Net.Http;
 using System.Text;
 using XY.CO2NET.Helpers;
-#if !NET45
+#if !NET48
 using Microsoft.Extensions.DependencyInjection;
 #endif
 using System.Text.RegularExpressions;
@@ -59,7 +59,7 @@ namespace XY.CO2NET.HttpUtility
             IServiceProvider serviceProvider,
             string url, Stream stream)
         {
-#if NET45
+#if NET48
             //ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3
             //ServicePointManager.ServerCertificateValidationCallback = new RemoteCertificateValidationCallback(CheckValidationResult);
 
@@ -91,7 +91,7 @@ namespace XY.CO2NET.HttpUtility
         {
             var dir = Path.GetDirectoryName(filePathName) ?? "/";
             Directory.CreateDirectory(dir);
-#if NET45
+#if NET48
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
             request.Method = "GET";
             request.Timeout = timeOut;
@@ -192,7 +192,7 @@ namespace XY.CO2NET.HttpUtility
             IServiceProvider serviceProvider,
             string url, Stream stream)
         {
-#if NET45
+#if NET48
             //ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3
             //ServicePointManager.ServerCertificateValidationCallback = new RemoteCertificateValidationCallback(CheckValidationResult);
 
@@ -224,7 +224,7 @@ namespace XY.CO2NET.HttpUtility
         {
             var dir = Path.GetDirectoryName(filePathName) ?? "/";
             Directory.CreateDirectory(dir);
-#if NET45
+#if NET48
             HttpClient httpClient = new HttpClient();
 #else
             HttpClient httpClient = serviceProvider.GetRequiredService<XYHttpClient>().Client;

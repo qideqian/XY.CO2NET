@@ -1,4 +1,4 @@
-﻿#if !NET45
+﻿#if !NET48
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -20,8 +20,6 @@ namespace XY.CO2NET
         /// 全局 ServiceCollection
         /// </summary>
         public static IServiceCollection GlobalServiceCollection { get; set; }
-
-        private static IServiceProvider _globalServiceProvider;
 
         /// <summary>
         /// 从 GlobalServiceCollection 重新 Build，生成新的 IServiceProvider

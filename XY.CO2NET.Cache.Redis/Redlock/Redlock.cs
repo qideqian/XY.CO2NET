@@ -214,6 +214,7 @@ namespace Redlock.CSharp
             Lock innerLock = null;
             bool successfull = await retryAsync(DefaultRetryCount, DefaultRetryDelay, async () =>
             {
+                await Task.CompletedTask;
                 try
                 {
                     int n = 0;

@@ -1,8 +1,7 @@
-﻿using System;
-using System.Net;
+﻿using System.Net;
 using System.Text;
 
-namespace XY
+namespace System
 {
     /// <summary>
     /// 用于网页的HTML、Url编码/解码
@@ -16,7 +15,7 @@ namespace XY
         /// <returns></returns>
         public static string HtmlEncode(this string html)
         {
-#if NET45
+#if NET48
             return System.Web.HttpUtility.HtmlEncode(html);
 #else
             return WebUtility.HtmlEncode(html);
@@ -29,14 +28,14 @@ namespace XY
         /// <returns></returns>
         public static string HtmlDecode(this string html)
         {
-#if NET45
+#if NET48
             return System.Web.HttpUtility.HtmlDecode(html);
 #else
             return WebUtility.HtmlDecode(html);
 #endif
         }
 
-#if NET45
+#if NET48
         /// <summary>
         /// 封装 System.Web.HttpUtility.UrlEncode
         /// <para>注意：.NET Core 转义后字母为大写</para>
@@ -62,7 +61,7 @@ namespace XY
         }
 #endif
 
-#if NET45
+#if NET48
         /// <summary>
         /// 封装System.Web.HttpUtility.UrlDecode
         /// </summary>

@@ -22,7 +22,7 @@ namespace XY.Encrypt
         /// <returns></returns>
         public static string Encrypt(string strValue)
         {
-            DESCryptoServiceProvider dsp = new DESCryptoServiceProvider();
+            DES dsp = DES.Create();
             MemoryStream memStream = new MemoryStream();
             using (memStream)
             {
@@ -44,7 +44,7 @@ namespace XY.Encrypt
         public static string Decrypt(string EncValue)
         {
             if (string.IsNullOrWhiteSpace(EncValue)) return string.Empty;
-            DESCryptoServiceProvider dsp = new DESCryptoServiceProvider();
+            DES dsp = DES.Create();
             byte[] buffer = Convert.FromBase64String(EncValue);
             MemoryStream memStream = new MemoryStream();
             using (memStream)

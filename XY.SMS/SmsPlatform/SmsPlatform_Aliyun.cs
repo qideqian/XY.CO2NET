@@ -38,15 +38,15 @@ namespace XY.SMS.SmsPlatform
         /// 
         /// </summary>
         /// <param name="TemplateCode">必填:短信模板-可在短信控制台中找到，发送国际/港澳台消息时，请使用国际/港澳台短信模版</param>
-        /// <param name="TemplateParam">可选:模板中的变量替换JSON串,如模板内容为"亲爱的${name},您的验证码为${code}"时,此处的值为</param>
+        /// <param name="TemplateParam">可选:模板中的变量替换JSON串,如模板内容为"亲爱的${name},您的验证码为${code}"时,此处的值为{"name":"用户名", "code":"验证码数字"}</param>
         /// <param name="SignName">短信签名</param>
         /// <param name="PhoneNumbers">必填:待发送手机号。支持以逗号分隔的形式进行批量调用，批量上限为1000个手机号码,批量调用相对于单条调用及时性稍有延迟,验证码类型的短信推荐使用单条调用的方式，发送国际/港澳台消息时，接收号码格式为00+国际区号+号码，如“0085200000000”</param>
         /// <returns></returns>
-        public Task<SmsResult> Send(string TemplateCode, string TemplateParam, string SignName, string PhoneNumbers, Action<string> SaveToDatabaseCallback)
+        public Task<SmsResult> Send(string TemplateCode, string TemplateParam, string SignName, string PhoneNumbers, Action<string> SaveToDatabaseCallback = null)
         {
             try
             {
-                request.SetEndpoint("cn-hangzhou");
+                request.SetEndpoint("dysmsapi.aliyuncs.com");
                 request.RegionId = "cn-hangzhou";
                 request.Product = product;
                 request.SetProductDomain(domain);
@@ -57,7 +57,7 @@ namespace XY.SMS.SmsPlatform
                 request.SignName = SignName;
                 //必填:短信模板-可在短信控制台中找到，发送国际/港澳台消息时，请使用国际/港澳台短信模版
                 request.TemplateCode = TemplateCode;
-                //可选:模板中的变量替换JSON串,如模板内容为"亲爱的${name},您的验证码为${code}"时,此处的值为
+                //可选:模板中的变量替换JSON串,如模板内容为"亲爱的${name},您的验证码为${code}"时,此处的值为{"name":"用户名", "code":"验证码数字"}
                 request.TemplateParam = TemplateParam;
                 //可选:outId为提供给业务方扩展字段,最终在短信回执消息中将此值带回给调用者
                 request.OutId = "yourOutId";
@@ -88,7 +88,7 @@ namespace XY.SMS.SmsPlatform
         }
 
         /// <summary>
-        /// 请优先使用重载方法Send(string TemplateCode, string TemplateParam, string SignName, string PhoneNumbers, Action<string> SaveToDatabaseCallback)
+        /// 请优先使用 <see cref="Send(string, string, string, string, Action{string})"/> 方法
         /// 或将TemplateCode、TemplateParam通过#拼接到MSGContent
         /// </summary>
         /// <param name="MSGContent"></param>
@@ -100,7 +100,7 @@ namespace XY.SMS.SmsPlatform
         public override Task<SmsResult> Send(string MSGContent, string SignName, string PhoneNumbers, Action<string> SaveToDatabaseCallback = null)
         {
             var _split = MSGContent.Split('#');
-            if (_split.Length != 2) throw new Exception("参数错误");
+            if (_split.Length != 2) throw new Exception("参数错误，阿里云模版请使用“短信编码Code#短信参数”");
             return Send(MSGContent.Split('#')[0], MSGContent.Split('#')[1], SignName, PhoneNumbers, SaveToDatabaseCallback);
         }
     }

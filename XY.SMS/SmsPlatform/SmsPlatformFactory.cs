@@ -40,7 +40,7 @@ namespace XY.SMS.SmsPlatform
             switch (smsPlatformType)
             {
                 case SmsPlatformType.Aliyun:
-                    return new SmsPlatform_Aliyun(smsAccountName, smsAccountPassword);
+                    return new SmsPlatform_AlibabaCloud(smsAccountName, smsAccountPassword);
                 default:
                     return new SmsPlatform_Welink(smsAccountName, smsAccountPassword, smsAccountSubNumber);
             }

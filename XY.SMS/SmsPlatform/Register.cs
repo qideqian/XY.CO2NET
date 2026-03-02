@@ -17,6 +17,7 @@ namespace XY.SMS
         public static void AddSMSServices(this IServiceCollection services, IConfiguration configuration)
         {
             services.Configure<XYSmsSetting>(configuration.GetSection("XYSmsSetting"));
+            services.AddSingleton<ISmsPlatform>(service => SmsPlatformFactory.GetSmsPlatform(service));
         }
     }
 }

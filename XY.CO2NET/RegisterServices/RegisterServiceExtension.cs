@@ -67,7 +67,9 @@ namespace XY.CO2NET.RegisterServices
                 {
                     try
                     {
+#pragma warning disable SYSLIB0057
                         var cert = new X509Certificate2(certPath, certSecret, X509KeyStorageFlags.PersistKeySet | X509KeyStorageFlags.MachineKeySet);
+#pragma warning restore SYSLIB0057
                         return AddXYHttpClientWithCertificate(serviceCollection, certName, cert, checkValidationResult);
                     }
                     catch (Exception ex)

@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using XY.CO2NET.Cache;
 using XY.CO2NET.RegisterServices;
 using XY.CO2NET.Threads;
+#if !NET48
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+#endif
 
 namespace XY.CO2NET
 {
@@ -97,6 +101,48 @@ namespace XY.CO2NET
             registerConfigure?.Invoke(register);
 
             return register.UseXYGlobal(autoScanExtensionCacheStrategies, extensionCacheStrategiesFunc);
+        }
+
+#endif
+
+        /// <summary>
+        /// 立即使用本地对象缓存策略
+        /// </summary>
+        public static void UseLocalObjectCacheNow()
+        {
+            CacheStrategyFactory.RegisterObjectCacheStrategy(() => LocalObjectCacheStrategy.Instance);
+        }
+
+#if !NET48
+        /// <summary>
+        /// 立即使用本地对象缓存策略，并注册 .NET Core DI
+        /// </summary>
+        public static IServiceCollection UseLocalObjectCacheNow(this IServiceCollection serviceCollection)
+        {
+            return UseLocalObjectCacheNow(serviceCollection, false);
+        }
+
+        /// <summary>
+        /// 立即使用本地对象缓存策略，并注册 .NET Core DI
+        /// </summary>
+        /// <param name="serviceCollection"></param>
+        /// <param name="useTryAddSingleton">是否使用 TryAddSingleton 避免重复注册</param>
+        public static IServiceCollection UseLocalObjectCacheNow(this IServiceCollection serviceCollection, bool useTryAddSingleton)
+        {
+            UseLocalObjectCacheNow();
+
+            if (useTryAddSingleton)
+            {
+                serviceCollection.TryAddSingleton<ILocalObjectCacheStrategy>(_ => LocalObjectCacheStrategy.Instance);
+                serviceCollection.TryAddSingleton<IBaseObjectCacheStrategy>(sp => sp.GetRequiredService<ILocalObjectCacheStrategy>());
+            }
+            else
+            {
+                serviceCollection.AddSingleton<ILocalObjectCacheStrategy>(_ => LocalObjectCacheStrategy.Instance);
+                serviceCollection.AddSingleton<IBaseObjectCacheStrategy>(sp => sp.GetRequiredService<ILocalObjectCacheStrategy>());
+            }
+
+            return serviceCollection;
         }
 #endif
     }

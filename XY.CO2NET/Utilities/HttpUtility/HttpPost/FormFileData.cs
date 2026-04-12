@@ -49,9 +49,9 @@ namespace XY.CO2NET.HttpUtility
 
             fileStream.Seek(0, SeekOrigin.Begin);
 
-            //方法一
-            byte[] fileBytes = new byte[fileStream.Length];
-            fileStream.Read(fileBytes, 0, fileBytes.Length);
+            using var ms = new MemoryStream();
+            fileStream.CopyTo(ms);
+            var fileBytes = ms.ToArray();
 
             //方法二
             //BinaryReader r = new BinaryReader(fileStream);

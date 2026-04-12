@@ -34,13 +34,6 @@ namespace XY.CO2NET.Helpers
         /// <returns></returns>
         public static string GetSha1(string encypStr)
         {
-            var sha1 = SHA1.Create();
-            var sha1Arr = sha1.ComputeHash(Encoding.UTF8.GetBytes(encypStr));
-            StringBuilder enText = new StringBuilder();
-            foreach (var b in sha1Arr)
-            {
-                enText.AppendFormat("{0:x2}", b);
-            }
             return GetSha1(encypStr, false);
         }
 
@@ -54,7 +47,7 @@ namespace XY.CO2NET.Helpers
         public static string GetSha1(string encypStr, bool toUpper = true, Encoding encoding = null)
         {
             encoding ??= Encoding.UTF8;
-            var sha1 = SHA1.Create();
+            using var sha1 = SHA1.Create();
             var sha1Arr = sha1.ComputeHash(encoding.GetBytes(encypStr));
             StringBuilder enText = new StringBuilder();
             foreach (var b in sha1Arr)
@@ -81,7 +74,7 @@ namespace XY.CO2NET.Helpers
         {
             stream.Seek(0, SeekOrigin.Begin);
 
-            var sha1 = SHA1.Create();
+            using var sha1 = SHA1.Create();
             var sha1Arr = sha1.ComputeHash(stream);
             StringBuilder enText = new StringBuilder();
             foreach (var b in sha1Arr)
@@ -108,7 +101,7 @@ namespace XY.CO2NET.Helpers
         /// <returns></returns>
         public static string GetSha1(byte[] bytes, bool toUpper = true)
         {
-            var sha1 = SHA1.Create();
+            using var sha1 = SHA1.Create();
             var sha1Arr = sha1.ComputeHash(bytes);
             StringBuilder enText = new StringBuilder();
             foreach (var b in sha1Arr)
@@ -164,9 +157,9 @@ namespace XY.CO2NET.Helpers
             string retStr;
 
 #if NET48
-            MD5CryptoServiceProvider m5 = new MD5CryptoServiceProvider();
+            using MD5CryptoServiceProvider m5 = new MD5CryptoServiceProvider();
 #else
-            MD5 m5 = MD5.Create();
+            using MD5 m5 = MD5.Create();
 #endif
 
             //创建md5对象
@@ -206,7 +199,7 @@ namespace XY.CO2NET.Helpers
             catch
             {
                 //使用UTF-8编码
-                return GetMD5("utf-8", Encoding.GetEncoding(charset));
+                return GetMD5(encypStr, Encoding.UTF8);
             }
         }
 
@@ -219,7 +212,7 @@ namespace XY.CO2NET.Helpers
         public static string GetMD5(Stream stream, bool toUpper = true)
         {
             stream.Position = 0;
-            MD5 md5 = new MD5CryptoServiceProvider();
+            using MD5 md5 = MD5.Create();
             byte[] ret = md5.ComputeHash(stream);
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < ret.Length; i++)
@@ -238,7 +231,7 @@ namespace XY.CO2NET.Helpers
         /// <returns></returns>
         public static string GetMD5(byte[] bytes , bool toUpper = true)
         {
-            MD5 md5 = new MD5CryptoServiceProvider();
+            using MD5 md5 = MD5.Create();
             byte[] ret = md5.ComputeHash(bytes);
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < ret.Length; i++)
@@ -283,7 +276,8 @@ namespace XY.CO2NET.Helpers
             {
                 sb.Append(buffer[i].ToString("x2"));
             }
-            return toUpper ? toUpper.ToString().ToUpper() : sb.ToString();
+            var result = sb.ToString();
+            return toUpper ? result.ToUpper() : result;
         }
 
         /// <summary>
@@ -303,7 +297,8 @@ namespace XY.CO2NET.Helpers
             {
                 sb.Append(buffer[i].ToString("x2"));
             }
-            return toUpper ? toUpper.ToString().ToUpper() : sb.ToString();
+            var result = sb.ToString();
+            return toUpper ? result.ToUpper() : result;
         }
 
         /// <summary>
@@ -323,7 +318,8 @@ namespace XY.CO2NET.Helpers
             {
                 sb.Append(buffer[i].ToString("x2"));
             }
-            return toUpper ? toUpper.ToString().ToUpper() : sb.ToString();
+            var result = sb.ToString();
+            return toUpper ? result.ToUpper() : result;
         }
 
         #endregion
@@ -412,12 +408,10 @@ namespace XY.CO2NET.Helpers
             if (string.IsNullOrEmpty(str)) return null;
             Byte[] toEncryptArray = Encoding.UTF8.GetBytes(str);
 
-            RijndaelManaged rm = new RijndaelManaged
-            {
-                Key = Encoding.UTF8.GetBytes(key.PadRight(32)),
-                Mode = CipherMode.ECB,
-                Padding = PaddingMode.PKCS7
-            };
+            using SymmetricAlgorithm rm = Aes.Create();
+            rm.Key = Encoding.UTF8.GetBytes(key.PadRight(32));
+            rm.Mode = CipherMode.ECB;
+            rm.Padding = PaddingMode.PKCS7;
 
             ICryptoTransform cTransform = rm.CreateEncryptor();
             Byte[] resultArray = cTransform.TransformFinalBlock(toEncryptArray, 0, toEncryptArray.Length);

@@ -9,7 +9,7 @@ namespace XY.CO2NET.Cache.Redis
     /// <summary>
     /// Redis的Object类型容器缓存（Key为String类型），Key-Value 类型储存
     /// </summary>
-    public class RedisObjectCacheStrategy : BaseRedisObjectCacheStrategy
+    public class RedisObjectCacheStrategy : BaseRedisObjectCacheStrategy, IRedisObjectCacheStrategy
     {
         #region 单例
 

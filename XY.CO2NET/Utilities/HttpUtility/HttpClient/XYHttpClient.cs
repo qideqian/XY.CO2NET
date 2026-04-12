@@ -53,7 +53,13 @@ namespace XY.CO2NET.HttpUtility
                 return;
             }
             var cookieHeader = cookieContainer.GetCookieHeader(uri);
-            Client.DefaultRequestHeaders.Add("Cookie", cookieHeader);
+            if (string.IsNullOrWhiteSpace(cookieHeader))
+            {
+                return;
+            }
+
+            Client.DefaultRequestHeaders.Remove("Cookie");
+            Client.DefaultRequestHeaders.TryAddWithoutValidation("Cookie", cookieHeader);
         }
 
         ///// <summary>

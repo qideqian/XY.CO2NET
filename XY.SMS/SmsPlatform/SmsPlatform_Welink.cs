@@ -1,9 +1,10 @@
 ﻿using System;
-using System.IO;
-using System.Net;
+using System.Collections.Generic;
+using System.Net.Http;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using XY.CO2NET.Helpers;
 using XY.CO2NET.Trace;
 using XY.Encrypt;
 
@@ -11,6 +12,8 @@ namespace XY.SMS.SmsPlatform
 {
     public class SmsPlatform_Welink : SmsPlatform, ISmsPlatform
     {
+        private static readonly HttpClient _httpClient = new HttpClient();
+
         private string AccountId { get; set; }
         private string Password { get; set; }
         private string ProductId { get; set; }
@@ -28,52 +31,53 @@ namespace XY.SMS.SmsPlatform
             throw new NotImplementedException();
         }
 
-        public override Task<SmsResult> Send(string MSGContent, string SignName, string PhoneNumbers, Action<string> SaveToDatabaseCallback = null)
+        public override async Task<SmsResult> Send(string MSGContent, string SignName, string PhoneNumbers, Action<string> SaveToDatabaseCallback = null)
         {
             var RegexStr = @"【[\S]+】";
             if (!Regex.IsMatch(MSGContent, RegexStr)) MSGContent += $"【{SignName}】";
 
             var Timestamp = GetTimeStamp();
             var Random = new Random().Next(int.MaxValue);
-            var PWD = MD5Encrypt.Encrypt(Password + "SMmsEncryptKey").ToUpper();
-            var AccessKey = SHA1Encrypt.sha256($"AccountId={AccountId}&PhoneNos={PhoneNumbers}&Password={PWD}&Random={Random}&Timestamp={Timestamp}");
+            var PWD = EncryptHelper.GetMD5(Password + "SMmsEncryptKey", Encoding.UTF8);
+            var AccessKey = SHA1Encrypt.SHA256($"AccountId={AccountId}&PhoneNos={PhoneNumbers}&Password={PWD}&Random={Random}&Timestamp={Timestamp}");
 
-            UTF8Encoding encoding = new UTF8Encoding();
-            byte[] postData = encoding.GetBytes($"AccountId={AccountId}&AccessKey={AccessKey.ToLower()}&Timestamp={Timestamp}&Random={Random}&ExtendNo=&ProductId={ProductId}&PhoneNos={PhoneNumbers}&Content={MSGContent}");
-
-            HttpWebRequest myRequest = (HttpWebRequest)WebRequest.Create(SmsServiceAddress);
-            myRequest.Method = "POST";
-            myRequest.ContentType = "application/x-www-form-urlencoded";
-            myRequest.ContentLength = postData.Length;
-
-            Stream newStream = myRequest.GetRequestStream();
-            newStream.Write(postData, 0, postData.Length);
-            newStream.Flush();
-            newStream.Close();
-
-            HttpWebResponse myResponse = (HttpWebResponse)myRequest.GetResponse();
-            if (myResponse.StatusCode == HttpStatusCode.OK)
+            var requestData = new Dictionary<string, string>
             {
-                StreamReader reader = new StreamReader(myResponse.GetResponseStream(), Encoding.UTF8);
-                var result = Newtonsoft.Json.JsonConvert.DeserializeObject<SelinkResult>(reader.ReadToEnd());
-                if (result.Result == "succ")
+                ["AccountId"] = AccountId,
+                ["AccessKey"] = AccessKey.ToLower(),
+                ["Timestamp"] = Timestamp,
+                ["Random"] = Random.ToString(),
+                ["ExtendNo"] = string.Empty,
+                ["ProductId"] = ProductId,
+                ["PhoneNos"] = PhoneNumbers,
+                ["Content"] = MSGContent
+            };
+
+            using (var response = await _httpClient.PostAsync(SmsServiceAddress, new FormUrlEncodedContent(requestData)).ConfigureAwait(false))
+            {
+                if (response.IsSuccessStatusCode)
                 {
-                    XYTrace.SendCustomLog("【短信发送】", $"发送短信成功：{MSGContent}，号码：{PhoneNumbers}。状态：{result.Result}（{result.Reason}）。发送通道：51welink");
-                    if (SaveToDatabaseCallback != null) SaveToDatabaseCallback($"{result.Result}|{result.Reason}");
-                    return Task.FromResult(new SmsResult() { SmsStatus = SmsStatus.成功, MSG = result.Reason });
+                    var json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                    var result = Newtonsoft.Json.JsonConvert.DeserializeObject<SelinkResult>(json);
+                    if (result.Result == "succ")
+                    {
+                        XYTrace.SendCustomLog("【短信发送】", $"发送短信成功：{MSGContent}，号码：{PhoneNumbers}。状态：{result.Result}（{result.Reason}）。发送通道：51welink");
+                        if (SaveToDatabaseCallback != null) SaveToDatabaseCallback($"{result.Result}|{result.Reason}");
+                        return new SmsResult() { SmsStatus = SmsStatus.成功, MSG = result.Reason };
+                    }
+                    else
+                    {
+                        XYTrace.SendCustomLog("【发送短信失败】", $"内容：{MSGContent}，号码：{PhoneNumbers}。状态：{result.Result}（{result.Reason}）。发送通道：51welink");
+                        if (SaveToDatabaseCallback != null) SaveToDatabaseCallback(result.Reason);
+                        return new SmsResult() { SmsStatus = SmsStatus.未知错误, MSG = result.Reason };
+                    }
                 }
                 else
                 {
-                    XYTrace.SendCustomLog("【发送短信失败】", $"内容：{MSGContent}，号码：{PhoneNumbers}。状态：{result.Result}（{result.Reason}）。发送通道：51welink");
-                    if (SaveToDatabaseCallback != null) SaveToDatabaseCallback(result.Reason);
-                    return Task.FromResult(new SmsResult() { SmsStatus = SmsStatus.未知错误, MSG = result.Reason });
+                    XYTrace.SendCustomLog("【发送短信失败】", $"内容：{MSGContent}，号码：{PhoneNumbers}。发送通道：51welink");
+                    if (SaveToDatabaseCallback != null) SaveToDatabaseCallback("请求异常！");
+                    return new SmsResult() { SmsStatus = SmsStatus.未知错误 };
                 }
-            }
-            else
-            {
-                XYTrace.SendCustomLog("【发送短信失败】", $"内容：{MSGContent}，号码：{PhoneNumbers}。发送通道：51welink");
-                if (SaveToDatabaseCallback != null) SaveToDatabaseCallback("请求异常！");
-                return Task.FromResult(new SmsResult() { SmsStatus = SmsStatus.未知错误 });
             }
         }
 
@@ -83,8 +87,7 @@ namespace XY.SMS.SmsPlatform
         /// <returns></returns>
         public static string GetTimeStamp()
         {
-            System.DateTime startTime = TimeZone.CurrentTimeZone.ToLocalTime(new System.DateTime(1970, 1, 1));
-            return ((int)(DateTime.Now - startTime).TotalSeconds).ToString();
+            return DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString();
             //TimeSpan ts = DateTime.Now - new DateTime(1970, 1, 1, 0, 0, 0, 0);
             //return Convert.ToInt64(ts.TotalSeconds).ToString();
         }

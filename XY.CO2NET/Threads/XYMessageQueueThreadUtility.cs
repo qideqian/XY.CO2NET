@@ -35,6 +35,8 @@ namespace XY.CO2NET.Threads
                 //此处可以添加日志
 #if NET48
                 System.Diagnostics.Trace.WriteLine(string.Format("XYMessageQueueThreadUtility执行析构函数错误：{0}", ex.Message));
+#else
+                _ = ex;
 #endif
             }
         }

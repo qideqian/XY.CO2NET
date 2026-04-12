@@ -1,4 +1,5 @@
-﻿using System.Security.Cryptography;
+﻿using System;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace XY.Encrypt
@@ -15,12 +16,13 @@ namespace XY.Encrypt
         /// <param name="strSource">待加密字串</param>
         /// <param name="length">16或32值之一,其它则采用.net默认MD5加密算法</param>
         /// <returns>加密后的字串</returns>
+        [Obsolete("MD5 已不建议用于安全敏感场景，建议改用 SHA256。")]
         public static string Encrypt(string source, int length = 32)
         {
-            HashAlgorithm provider = CryptoConfig.CreateFromName("MD5") as HashAlgorithm;
             if (string.IsNullOrEmpty(source)) return string.Empty;
 
-            byte[] bytes = Encoding.ASCII.GetBytes(source);
+            using var provider = MD5.Create();
+            byte[] bytes = Encoding.UTF8.GetBytes(source);
             byte[] hashValue = provider.ComputeHash(bytes);
             StringBuilder sb = new StringBuilder();
             switch (length)

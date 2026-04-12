@@ -127,9 +127,9 @@ namespace XY.CO2NET.HttpUtility
                             }
                         }
                     }
-                    catch (Exception ex)
+                    catch (Exception)
                     {
-                        throw ex;
+                        throw;
                     }
                 }
                 //结尾
@@ -265,9 +265,9 @@ namespace XY.CO2NET.HttpUtility
                             multipartFormDataContent.Add(CreateFileContent(memoryStream, file.Key, fileName), file.Key, fileName);
                         }
                     }
-                    catch (Exception ex)
+                    catch (Exception)
                     {
-                        throw ex;
+                        throw;
                     }
                 }
 
@@ -495,7 +495,7 @@ namespace XY.CO2NET.HttpUtility
                 }
                 hc.Dispose();//关闭HttpContent（StreamContent）
             }
-            catch (BaseException ex)
+            catch (BaseException)
             {
             }
             return new XYHttpResponse(response);
@@ -694,7 +694,7 @@ namespace XY.CO2NET.HttpUtility
                 }
                 hc.Dispose();//关闭HttpContent（StreamContent）
             }
-            catch (BaseException ex)
+            catch (BaseException)
             {
             }
             return new XYHttpResponse(response);

@@ -1,0 +1,64 @@
+name: Publish NuGet packages
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch: {}
+
+jobs:
+  publish:
+    name: Pack and publish NuGet packages
+    runs-on: windows-latest
+    env:
+      NUGET_SOURCE: https://api.nuget.org/v3/index.json
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          # adjust SDK version if you need a different one (e.g. 10.0.x when available)
+          dotnet-version: '8.0.x'
+
+      - name: Restore
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --configuration Release --no-restore
+
+      - name: Pack projects
+        shell: pwsh
+        env:
+          VERSION: ${{ github.ref_name }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $version = $env:VERSION -replace '^v',''
+          if (-not $version) { Write-Host "No tag version found; using 1.0.0"; $version = '1.0.0' }
+          New-Item -ItemType Directory -Path nupkgs -Force | Out-Null
+          Get-ChildItem -Path . -Filter *.csproj -Recurse | ForEach-Object {
+            Write-Host "Packing $($_.FullName) with version $version"
+            try {
+              dotnet pack $_.FullName -c Release -o nupkgs /p:PackageVersion=$version --no-build
+            } catch {
+              Write-Warning "dotnet pack failed for $($_.FullName) - skipped: $_"
+            }
+          }
+
+      - name: Push packages to NuGet
+        shell: pwsh
+        env:
+          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          if (-not $env:NUGET_API_KEY) { Write-Host 'NUGET_API_KEY secret not set; skipping publish.'; exit 0 }
+          Get-ChildItem -Path nupkgs -Filter *.nupkg -File -Recurse | ForEach-Object {
+            Write-Host "Pushing $($_.FullName)"
+            dotnet nuget push $_.FullName -k $env:NUGET_API_KEY -s $env:NUGET_SOURCE --skip-duplicate
+          }
+          Get-ChildItem -Path nupkgs -Filter *.snupkg -File -Recurse | ForEach-Object {
+            Write-Host "Pushing symbols $($_.FullName)"
+            dotnet nuget push $_.FullName -k $env:NUGET_API_KEY -s $env:NUGET_SOURCE --skip-duplicate
+          }

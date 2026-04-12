@@ -17,9 +17,10 @@ namespace XY.CO2NET.Utilities
         /// <returns></returns>
         public static string GetBase64String(Stream stream)
         {
-            byte[] arr = new byte[stream.Length];
             stream.Position = 0;
-            stream.Read(arr, 0, (int)stream.Length);
+            using var ms = new MemoryStream();
+            stream.CopyTo(ms);
+            var arr = ms.ToArray();
 #if NET48
             return Convert.ToBase64String(arr, Base64FormattingOptions.None);
 #else
@@ -72,9 +73,10 @@ namespace XY.CO2NET.Utilities
         /// <returns></returns>
         public static async Task<string> GetBase64StringAsync(Stream stream)
         {
-            byte[] arr = new byte[stream.Length];
             stream.Position = 0;
-            await stream.ReadAsync(arr, 0, (int)stream.Length).ConfigureAwait(false);
+            using var ms = new MemoryStream();
+            await stream.CopyToAsync(ms).ConfigureAwait(false);
+            var arr = ms.ToArray();
 #if NET48
             return Convert.ToBase64String(arr, Base64FormattingOptions.None);
 #else

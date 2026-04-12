@@ -11,7 +11,7 @@ namespace XY.CO2NET.Cache
     /// <summary>
     /// 本地容器缓存策略
     /// </summary>
-    public class LocalObjectCacheStrategy : BaseCacheStrategy, IBaseObjectCacheStrategy
+    public class LocalObjectCacheStrategy : BaseCacheStrategy, ILocalObjectCacheStrategy
     {
         #region 数据源
 

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using XY.CO2NET.Cache;
 using XY.CO2NET.RegisterServices;
 using XY.CO2NET.Threads;
+using Microsoft.Extensions.Configuration;
+
 #if !NET48
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -15,6 +17,54 @@ namespace XY.CO2NET
     /// </summary>
     public static class Register
     {
+        #if !NET48
+        /// <summary>
+        /// 注册 XYSetting 到 DI 容器
+        /// </summary>
+        public static IServiceCollection AddXYSetting(this IServiceCollection services, XYSetting xySetting)
+        {
+            services.AddSingleton(xySetting);
+            return services;
+        }
+
+        /// <summary>
+        /// 从配置文件 section "XYSetting" 绑定并注册 XYSetting 到 DI 容器
+        /// </summary>
+        public static IServiceCollection AddXYSetting(this IServiceCollection services, IConfiguration configuration)
+        {
+            var xySetting = new XYSetting();
+            configuration.GetSection("XYSetting").Bind(xySetting);
+            services.AddSingleton(xySetting);
+            return services;
+        }
+
+        /// <summary>
+        /// 注册线程服务到 DI 容器（调用 ThreadUtility.Register）
+        /// </summary>
+        public static IServiceCollection AddXYThreads(this IServiceCollection services)
+        {
+            ThreadUtility.Register();
+            return services;
+        }
+
+        /// <summary>
+        /// 注册日志服务到 DI 容器（如 ITraceLog 实现）
+        /// </summary>
+        public static IServiceCollection AddXYTraceLog<T>(this IServiceCollection services) where T : class
+        {
+            services.AddSingleton(typeof(T));
+            return services;
+        }
+
+        /// <summary>
+        /// 注册自定义缓存策略到 DI 容器
+        /// </summary>
+        public static IServiceCollection AddCacheStrategy<T>(this IServiceCollection services) where T : class, IBaseObjectCacheStrategy
+        {
+            services.AddSingleton<IBaseObjectCacheStrategy, T>();
+            return services;
+        }
+        #endif
         /// <summary>
         /// 修改默认缓存命名空间
         /// </summary>

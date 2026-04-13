@@ -1,4 +1,5 @@
 ﻿#if !NET48
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 #endif
@@ -57,6 +58,21 @@ namespace XY.CO2NET.Cache.Redis
             }
 
             return serviceCollection;
+        }
+
+        /// <summary>
+        /// 从配置文件 section "RedisSetting" 绑定并注册 RedisSetting 到 DI 容器，并设置 RedisManager.ConfigurationOption
+        /// </summary>
+        public static IServiceCollection AddRedisSetting(this IServiceCollection services, IConfiguration configuration)
+        {
+            var redisSetting = new RedisSetting();
+            configuration.GetSection("RedisSetting").Bind(redisSetting);
+            services.AddSingleton(redisSetting);
+            if (!string.IsNullOrEmpty(redisSetting.ConfigurationOption))
+            {
+                RedisManager.ConfigurationOption = redisSetting.ConfigurationOption;
+            }
+            return services;
         }
 
         /// <summary>

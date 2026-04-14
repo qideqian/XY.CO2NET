@@ -1,6 +1,14 @@
 ﻿
 
 
+
+# XY.CO2NET
+
+[![GitHub stars](https://img.shields.io/github/stars/qideqian/XY.CO2NET.svg?style=social)](https://github.com/qideqian/XY.CO2NET/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/qideqian/XY.CO2NET.svg?style=social)](https://github.com/qideqian/XY.CO2NET/network/members)
+[![GitHub issues](https://img.shields.io/github/issues/qideqian/XY.CO2NET.svg)](https://github.com/qideqian/XY.CO2NET/issues)
+[![GitHub license](https://img.shields.io/github/license/qideqian/XY.CO2NET.svg)](https://github.com/qideqian/XY.CO2NET/blob/master/LICENSE)
+
 > ### _本地缓存使用_
 #### 缓存注册（不注册默认使用本地缓存）
 ```

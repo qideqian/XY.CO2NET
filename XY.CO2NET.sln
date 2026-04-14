@@ -15,6 +15,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XY.SMS", "XY.SMS\XY.SMS.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XY.CO2NETTests", "XY.CO2NETTests\XY.CO2NETTests.csproj", "{677E2267-115C-40F4-A628-33901769B550}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XY.SMSTests1", "XY.SMSTests1\XY.SMSTests1.csproj", "{416A659D-D3DB-4F77-9FF2-5CF13615A4B0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -37,6 +39,10 @@ Global
 		{677E2267-115C-40F4-A628-33901769B550}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{677E2267-115C-40F4-A628-33901769B550}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{677E2267-115C-40F4-A628-33901769B550}.Release|Any CPU.Build.0 = Release|Any CPU
+		{416A659D-D3DB-4F77-9FF2-5CF13615A4B0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{416A659D-D3DB-4F77-9FF2-5CF13615A4B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{416A659D-D3DB-4F77-9FF2-5CF13615A4B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{416A659D-D3DB-4F77-9FF2-5CF13615A4B0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -44,6 +50,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{E56ED0CC-E43C-4065-A033-C8C1DE4995AD} = {6E8EF90A-4254-469F-B808-1C7A1388E6E6}
 		{677E2267-115C-40F4-A628-33901769B550} = {851941B9-B437-4DA3-933D-3E27D9FA33E0}
+		{416A659D-D3DB-4F77-9FF2-5CF13615A4B0} = {851941B9-B437-4DA3-933D-3E27D9FA33E0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A7377D91-D341-4896-B288-99795CB5CB66}

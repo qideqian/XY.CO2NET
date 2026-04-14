@@ -110,5 +110,36 @@ namespace XY.SMS.SmsPlatform
             /// </summary>
             public byte SplitCount { get; set; }
         }
+
+        /// <summary>
+        /// 发送短信（可选日志记录，Action<Action<string>>日志回调）
+        /// </summary>
+        public Task<SmsResult> Send(string MSGContent, string SignName, string PhoneNumbers, bool writeLog, Action<Action<string>> logAction, Action<string> SaveToDatabaseCallback = null)
+        {
+            var resultTask = Send(MSGContent, SignName, PhoneNumbers, SaveToDatabaseCallback);
+            if (writeLog && logAction != null)
+            {
+                logAction((logExtra) =>
+                {
+                    var logContent = $"内容:{MSGContent} 签名:{SignName} 手机号:{PhoneNumbers} 额外:{logExtra}";
+                    WriteSmsLog(logContent);
+                });
+            }
+            return resultTask;
+        }
+
+        /// <summary>
+        /// 发送短信（可选日志记录，直接传递日志内容）
+        /// </summary>
+        public Task<SmsResult> Send(string MSGContent, string SignName, string PhoneNumbers, bool writeLog, string logExtra, Action<string> SaveToDatabaseCallback = null)
+        {
+            var resultTask = Send(MSGContent, SignName, PhoneNumbers, SaveToDatabaseCallback);
+            if (writeLog)
+            {
+                var logContent = $"内容:{MSGContent} 签名:{SignName} 手机号:{PhoneNumbers} 额外:{logExtra}";
+                WriteSmsLog(logContent);
+            }
+            return resultTask;
+        }
     }
 }

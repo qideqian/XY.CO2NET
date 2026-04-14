@@ -44,5 +44,13 @@ namespace XY.SMS.SmsPlatform
             }
             return (sb.ToString());
         }
+        /// <summary>
+        /// 统一写入短信日志
+        /// </summary>
+        /// <param name="content">日志内容</param>
+        protected void WriteSmsLog(string content)
+        {
+            SmsLogHelper.WriteLog(content);
+        }
     }
 }

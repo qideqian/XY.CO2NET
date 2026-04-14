@@ -27,6 +27,53 @@ namespace XY.SMS.SmsPlatform
             _accessKeySecret = accessKeySecret;
         }
 
+        /// <summary>
+        /// 发送短信（可选日志记录）
+        /// </summary>
+        /// <param name="TemplateCode">短信模板编码</param>
+        /// <param name="TemplateParam">模板参数</param>
+        /// <param name="SignName">短信签名</param>
+        /// <param name="PhoneNumbers">手机号</param>
+        /// <param name="writeLog">是否记录日志</param>
+        /// <param name="logAction">日志内容回调（如需额外参数如IP，调用方需提供）</param>
+        /// <param name="SaveToDatabaseCallback">保存到数据库回调</param>
+        /// <returns></returns>
+        public Task<SmsResult> Send(string TemplateCode, string TemplateParam, string SignName, string PhoneNumbers, bool writeLog, Action<Action<string>> logAction, Action<string> SaveToDatabaseCallback = null)
+        {
+            var resultTask = Send(TemplateCode, TemplateParam, SignName, PhoneNumbers, SaveToDatabaseCallback);
+            if (writeLog && logAction != null)
+            {
+                logAction((logExtra) =>
+                {
+                    var logContent = $"模板Code:{TemplateCode} 参数:{TemplateParam} 签名:{SignName} 手机号:{PhoneNumbers} 额外:{logExtra}";
+                    XY.SMS.SmsLogHelper.WriteLog(logContent);
+                });
+            }
+            return resultTask;
+        }
+
+        /// <summary>
+        /// 发送短信（可选日志记录）
+        /// </summary>
+        /// <param name="TemplateCode">短信模板编码</param>
+        /// <param name="TemplateParam">模板参数</param>
+        /// <param name="SignName">短信签名</param>
+        /// <param name="PhoneNumbers">手机号</param>
+        /// <param name="writeLog">是否记录日志</param>
+        /// <param name="logAction">日志内容回调（如需额外参数如IP，调用方需提供）</param>
+        /// <param name="SaveToDatabaseCallback">保存到数据库回调</param>
+        /// <returns></returns>
+        public Task<SmsResult> Send(string TemplateCode, string TemplateParam, string SignName, string PhoneNumbers, bool writeLog, string logExtra, Action<string> SaveToDatabaseCallback = null)
+        {
+            var resultTask = Send(TemplateCode, TemplateParam, SignName, PhoneNumbers, SaveToDatabaseCallback);
+            if (writeLog)
+            {
+                var logContent = $"模板Code:{TemplateCode} 参数:{TemplateParam} 签名:{SignName} 手机号:{PhoneNumbers} 额外:{logExtra}";
+                XY.SMS.SmsLogHelper.WriteLog(logContent);
+            }
+            return resultTask;
+        }
+
         public override string SmsServiceAddress => "dysmsapi.aliyuncs.com";
 
         public override string GetLastCount()

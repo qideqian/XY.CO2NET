@@ -4,7 +4,7 @@
     <TargetFrameworks>NET48;netstandard2.0;net6.0;net10.0</TargetFrameworks>
     <LangVersion>8.0</LangVersion>
     <MicrosoftExtensionsVersionLegacy>6.0.0</MicrosoftExtensionsVersionLegacy>
-    <MicrosoftExtensionsVersionModern>8.0.0</MicrosoftExtensionsVersionModern>
+    <MicrosoftExtensionsVersionModern>10.0.0</MicrosoftExtensionsVersionModern>
     <Authors>QiDeQian</Authors>
     <Company>山东新意软件科技有限公司</Company>
     <Description>通用基础类库</Description>

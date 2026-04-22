@@ -33,6 +33,7 @@ namespace XY.CO2NET.RegisterServices
         {
             XYDI.GlobalServiceCollection = serviceCollection;
             serviceCollection.Configure<XYSetting>(configuration.GetSection("XYSetting"));
+            Config.XYSetting = configuration.GetSection("XYSetting").Get<XYSetting>();
 
             // .net core 3.0 HttpClient 文档参考：https://docs.microsoft.com/zh-cn/aspnet/core/fundamentals/http-requests?view=aspnetcore-3.0
             //配置 HttpClient，可使用 Head 自定义 Cookie

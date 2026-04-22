@@ -47,13 +47,26 @@ jobs:
             }
           }
 
+      - name: Verify NUGET_API_KEY available
+        shell: pwsh
+        env:
+          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+        run: |
+          if (-not $env:NUGET_API_KEY) {
+            Write-Host 'NUGET_API_KEY secret NOT found in this run.'
+            Write-Host 'Ensure you added repository secret named exactly "NUGET_API_KEY" (Settings → Secrets and variables → Actions).' 
+            exit 1
+          }
+          else {
+            Write-Host 'NUGET_API_KEY secret is present in this run (value hidden).'
+          }
+
       - name: Push packages to NuGet
         shell: pwsh
         env:
           NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
         run: |
           $ErrorActionPreference = 'Stop'
-          if (-not $env:NUGET_API_KEY) { Write-Host 'NUGET_API_KEY secret not set; skipping publish.'; exit 0 }
           Get-ChildItem -Path nupkgs -Filter *.nupkg -File -Recurse | ForEach-Object {
             Write-Host "Pushing $($_.FullName)"
             dotnet nuget push $_.FullName -k $env:NUGET_API_KEY -s $env:NUGET_SOURCE --skip-duplicate

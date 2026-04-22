@@ -76,3 +76,10 @@ NET Core模式下通过`RegisterService.Start(XYSetting xySetting)`注册
 + 缓存在表数据查询中的应用
 
 + .NetCore下缓存应用，分布式缓存应用
+
+
+推送标签并出发Nuget发布
+```
+cd 'D:\Project\GitHub\XY.CO2NET' ; git tag -a v2.0.0 -m "Release v2.0.0" ; git push origin refs/tags/v2.0.0
+
+```

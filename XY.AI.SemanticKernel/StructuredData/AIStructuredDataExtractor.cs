@@ -49,6 +49,9 @@ namespace XY.AI.SemanticKernel
         /// <exception cref="ArgumentException">当 <paramref name="text" /> 或 <paramref name="prompt" /> 为空时抛出。</exception>
         /// <exception cref="OperationCanceledException">当请求被取消时抛出。</exception>
         /// <exception cref="InvalidOperationException">当未注册聊天服务或模型返回内容无法反序列化时抛出。</exception>
+        /// <remarks>
+        /// 当模型返回 JSON 数组且目标类型为对象时，会自动尝试提取数组首个对象并反序列化。
+        /// </remarks>
         public async Task<T?> ExtractDataAsync<T>(
             string text,
             string prompt,
@@ -95,6 +98,26 @@ namespace XY.AI.SemanticKernel
             }
             catch (JsonException ex)
             {
+                try
+                {
+                    using var jsonDocument = JsonDocument.Parse(cleanResponse);
+                    if (jsonDocument.RootElement.ValueKind == JsonValueKind.Array
+                        && jsonDocument.RootElement.GetArrayLength() > 0)
+                    {
+                        var firstItem = jsonDocument.RootElement[0];
+                        if (firstItem.ValueKind == JsonValueKind.Object)
+                        {
+                            return JsonSerializer.Deserialize<T>(firstItem.GetRawText(), new JsonSerializerOptions
+                            {
+                                PropertyNameCaseInsensitive = _options.PropertyNameCaseInsensitive
+                            });
+                        }
+                    }
+                }
+                catch (JsonException)
+                {
+                }
+
                 throw new InvalidOperationException($"无法将 AI 响应反序列化为 {typeof(T).Name}。响应内容：{cleanResponse}", ex);
             }
         }

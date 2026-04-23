@@ -2,6 +2,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.SemanticKernel;
 using System;
+using XY.AI.SemanticKernel.StructuredData;
 
 namespace XY.AI.SemanticKernel
 {

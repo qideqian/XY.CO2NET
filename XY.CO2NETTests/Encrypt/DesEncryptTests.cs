@@ -1,12 +1,4 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using XY.Encrypt;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace XY.Encrypt.Tests
+﻿namespace XY.Encrypt.Tests
 {
     [TestClass()]
     public class DesEncryptTests

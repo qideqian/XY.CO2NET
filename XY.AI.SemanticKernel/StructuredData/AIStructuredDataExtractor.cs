@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using XY.AI.SemanticKernel.StructuredData;
 
 namespace XY.AI.SemanticKernel
 {

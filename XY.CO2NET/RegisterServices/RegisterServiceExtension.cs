@@ -1,8 +1,8 @@
 ﻿using System;
-using XY.CO2NET.HttpUtility;
-using System.Security.Cryptography.X509Certificates;
-using System.Net.Security;
 using System.IO;
+using System.Net.Security;
+using System.Security.Cryptography.X509Certificates;
+using XY.CO2NET.HttpUtility;
 
 #if !NET48
 using System.Net.Http;

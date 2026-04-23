@@ -1,9 +1,9 @@
-﻿using System;
+﻿using Microsoft.Extensions.Configuration;
+using System;
 using System.Collections.Generic;
 using XY.CO2NET.Cache;
 using XY.CO2NET.RegisterServices;
 using XY.CO2NET.Threads;
-using Microsoft.Extensions.Configuration;
 
 #if !NET48
 using Microsoft.Extensions.DependencyInjection;
@@ -17,7 +17,7 @@ namespace XY.CO2NET
     /// </summary>
     public static class Register
     {
-        #if !NET48
+#if !NET48
         /// <summary>
         /// 注册 XYSetting 到 DI 容器
         /// </summary>
@@ -64,7 +64,7 @@ namespace XY.CO2NET
             services.AddSingleton<IBaseObjectCacheStrategy, T>();
             return services;
         }
-        #endif
+#endif
         /// <summary>
         /// 修改默认缓存命名空间
         /// </summary>

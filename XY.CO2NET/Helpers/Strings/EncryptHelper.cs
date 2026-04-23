@@ -229,7 +229,7 @@ namespace XY.CO2NET.Helpers
         /// <param name="bytes">byte[]</param>
         /// <param name="toUpper">是否返回大写结果，true：大写，false：小写</param>
         /// <returns></returns>
-        public static string GetMD5(byte[] bytes , bool toUpper = true)
+        public static string GetMD5(byte[] bytes, bool toUpper = true)
         {
             using MD5 md5 = MD5.Create();
             byte[] ret = md5.ComputeHash(bytes);

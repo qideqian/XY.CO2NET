@@ -1,12 +1,4 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using XY.CO2NET.Helpers.Function;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace XY.CO2NET.Helpers.Function.Tests
+﻿namespace XY.CO2NET.Helpers.Function.Tests
 {
     [TestClass()]
     public class Function2HelperTests

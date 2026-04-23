@@ -6,7 +6,6 @@ using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
-using XY.CO2NET.Helpers;
 #if NET48
 using System.Web;
 #else

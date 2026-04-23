@@ -1,8 +1,4 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using XY.SMS.SmsPlatform;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace XY.SMS.SmsPlatform.Tests
 {
@@ -20,7 +16,8 @@ namespace XY.SMS.SmsPlatform.Tests
                 "签名",
                 "13800000000",
                 true,
-                cb => {
+                cb =>
+                {
                     logCalled = true;
                     cb("127.0.0.1");
                 }
@@ -39,7 +36,8 @@ namespace XY.SMS.SmsPlatform.Tests
                 "签名",
                 "13800000001",
                 true,
-                ip => {
+                ip =>
+                {
                     logCalled = true;
                     var logIp = "192.168.1.1";
                     XY.SMS.SmsLogHelper.WriteLog($"测试日志IP:{logIp}");

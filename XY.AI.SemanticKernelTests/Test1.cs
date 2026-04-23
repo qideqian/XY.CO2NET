@@ -4,6 +4,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.ChatCompletion;
 using XY.AI.SemanticKernel;
+using XY.AI.SemanticKernel.StructuredData;
 
 namespace XY.AI.SemanticKernelTests;
 

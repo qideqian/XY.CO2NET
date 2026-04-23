@@ -1,5 +1,3 @@
-using Microsoft.Extensions.Configuration;
-
 namespace XY.CO2NET.Cache.Redis
 {
     /// <summary>

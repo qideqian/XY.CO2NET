@@ -1,4 +1,4 @@
-namespace XY.AI.SemanticKernel
+namespace XY.AI.SemanticKernel.StructuredData
 {
     /// <summary>
     /// AI 结构化数据提取选项。

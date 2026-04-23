@@ -1,5 +1,4 @@
 using System.Text;
-using XY.CO2NET.Helpers;
 
 namespace XY.CO2NET.Helpers.Strings.Tests
 {

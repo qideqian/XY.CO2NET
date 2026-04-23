@@ -1,5 +1,3 @@
-using XY.Encrypt;
-
 namespace XY.Encrypt.Tests
 {
     [TestClass]

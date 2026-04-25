@@ -47,5 +47,66 @@ namespace XY.Encrypt
             return sb.ToString();
         }
         #endregion MD5
+
+        /// <summary>
+        /// Md5加密（小写32位十六进制）。
+        /// </summary>
+        /// <param name="input">待加密的字符串</param>
+        /// <returns>加密后的十六进制字符串</returns>
+        public static string Md5Hex(string input)
+        {
+            if (string.IsNullOrEmpty(input)) return string.Empty;
+
+            var bytes = Encoding.UTF8.GetBytes(input);
+            var hash = ComputeMd5Hash(bytes);
+            return ToLowerHex(hash);
+        }
+
+        /// <summary>
+        /// 双重 Md5 加密（先对原文做 Md5Hex，再对结果做一次 Md5Hex）。
+        /// </summary>
+        /// <param name="input">待加密的字符串</param>
+        /// <returns>双重加密后的十六进制字符串</returns>
+        public static string Md5HexDouble(string input)
+        {
+            if (string.IsNullOrEmpty(input)) return string.Empty;
+
+            return Md5Hex(Md5Hex(input));
+        }
+
+        /// <summary>
+        /// 计算 MD5 哈希值，按目标框架选择可用实现。
+        /// </summary>
+        /// <param name="bytes">待哈希字节数组</param>
+        /// <returns>MD5 哈希字节数组</returns>
+        private static byte[] ComputeMd5Hash(byte[] bytes)
+        {
+#if NET6_0_OR_GREATER
+            return MD5.HashData(bytes);
+#else
+            using var md5 = MD5.Create();
+            return md5.ComputeHash(bytes);
+#endif
+        }
+
+        /// <summary>
+        /// 将字节数组转换为小写十六进制字符串。
+        /// </summary>
+        /// <param name="bytes">字节数组</param>
+        /// <returns>小写十六进制字符串</returns>
+        private static string ToLowerHex(byte[] bytes)
+        {
+#if NET6_0_OR_GREATER
+            return Convert.ToHexString(bytes).ToLowerInvariant();
+#else
+            var sb = new StringBuilder(bytes.Length * 2);
+            for (int i = 0; i < bytes.Length; i++)
+            {
+                sb.Append(bytes[i].ToString("x2"));
+            }
+
+            return sb.ToString();
+#endif
+        }
     }
 }

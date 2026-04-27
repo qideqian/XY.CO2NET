@@ -8,7 +8,7 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Authors>QiDeQian</Authors>
     <Company>山东新意软件科技有限公司</Company>
-    <Description>基于阿里云 OCR 的文本识别提取帮助类库</Description>
+    <Description>基于阿里云 OCR 的文本识别类库，支持通用文字识别与 DI 集成配置。</Description>
     <Copyright>ShanDongXinYi Copyright © 2021~2026</Copyright>
     <PackageProjectUrl>https://github.com/qideqian/XY.CO2NET</PackageProjectUrl>
     <RepositoryUrl>https://github.com/qideqian/XY.CO2NET</RepositoryUrl>
@@ -18,14 +18,16 @@
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageIcon>icon.png</PackageIcon>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <PackageTags>OCR,AlibabaCloud,DI</PackageTags>
+    <PackageTags>XY.CO2NET,OCR,AlibabaCloud,Aliyun,TextRecognition,DI</PackageTags>
     <PackageReleaseNotes>
-      v1.0.0
-      - 新增 XY.OCR.AlibabaCloud 类库
-      - 支持阿里云 OCR 通用文字识别
-      - 支持配置文件/委托/直接参数三种 DI 注册方式
+      [新增] Added
+      - 增补阿里云 OCR（文本识别）能力说明与 DI 配置说明。
+      [优化] Improved
+      - 统一 NuGet 元数据格式（Description/Tags/README/Icon/License/Repository）。
+      [修复] Fixed
+      - 修正发布说明与版本信息一致性，优化包检索呈现。
     </PackageReleaseNotes>
-    <Version>1.0.0</Version>
+    <Version>2.0.8</Version>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>

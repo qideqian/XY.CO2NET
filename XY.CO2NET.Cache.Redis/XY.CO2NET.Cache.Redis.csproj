@@ -2,15 +2,45 @@
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net6.0;net10.0</TargetFrameworks>
+    <LangVersion>10.0</LangVersion>
+    <Nullable>enable</Nullable>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Authors>QiDeQian</Authors>
+    <Company>山东新意软件科技有限公司</Company>
+    <Description>基于 StackExchange.Redis 的缓存扩展类库。</Description>
+    <Copyright>ShanDongXinYi Copyright © 2021~2026</Copyright>
+    <PackageProjectUrl>https://github.com/qideqian/XY.CO2NET</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/qideqian/XY.CO2NET</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryBranch>master</RepositoryBranch>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageIcon>icon.png</PackageIcon>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageTags>XY.CO2NET,Cache,Redis,StackExchangeRedis,DistributedCache</PackageTags>
+    <PackageReleaseNotes>
+      [新增] Added
+      - 增补 Redis 扩展能力说明与检索关键词。
+      [优化] Improved
+      - 统一 NuGet 元数据格式（Description/Tags/README/Icon/License/Repository）。
+      [修复] Fixed
+      - 修正发布说明与版本信息一致性，提升包展示稳定性。
+    </PackageReleaseNotes>
+    <Version>2.0.8</Version>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="StackExchange.Redis" Version="2.7.17" />
+    <PackageReference Include="StackExchange.Redis" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\XY.CO2NET\XY.CO2NET.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="\" />
+    <None Include="..\XY.OCR.AlibabaCloud\icon.png" Link="icon.png" Pack="true" PackagePath="\" />
   </ItemGroup>
 
 </Project>

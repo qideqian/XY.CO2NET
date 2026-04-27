@@ -7,17 +7,27 @@
     <MicrosoftExtensionsVersionModern>10.0.0</MicrosoftExtensionsVersionModern>
     <Authors>QiDeQian</Authors>
     <Company>山东新意软件科技有限公司</Company>
-    <Description>通用基础类库</Description>
+    <Description>基础通用能力类库，提供缓存、加密、HTTP、线程与常用工具扩展，适用于 NET48/netstandard2.0/net6.0/net10.0。</Description>
     <Copyright>ShanDongXinYi Copyright © 2021~2026</Copyright>
     <PackageProjectUrl>https://github.com/qideqian/XY.CO2NET</PackageProjectUrl>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/qideqian/XY.CO2NET</RepositoryUrl>
-    <PackageTags>Cache,Redis</PackageTags>
+    <RepositoryBranch>master</RepositoryBranch>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageIcon>icon.png</PackageIcon>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageTags>XY.CO2NET,Core,Utilities,Cache,Encryption,Http,Threading</PackageTags>
     <PackageReleaseNotes>
-      v1.0.0.0 Redis缓存
+      [新增] Added
+      - 补充基础能力说明（缓存、加密、HTTP、线程与常用工具）。
+      [优化] Improved
+      - 统一 NuGet 元数据格式（Description/Tags/README/Icon/License/Repository）。
+      [修复] Fixed
+      - 修正发布说明与版本信息一致性，优化多目标框架展示。
     </PackageReleaseNotes>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>1.0.9</Version>
+    <Version>2.0.8</Version>
   </PropertyGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'NET48' ">
@@ -42,6 +52,11 @@
     <PackageReference Include="Microsoft.Extensions.Http" Version="$(MicrosoftExtensionsVersionModern)" />
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="$(MicrosoftExtensionsVersionModern)" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="\" />
+    <None Include="..\XY.OCR.AlibabaCloud\icon.png" Link="icon.png" Pack="true" PackagePath="\" />
   </ItemGroup>
 
 </Project>

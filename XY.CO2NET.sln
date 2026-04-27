@@ -27,6 +27,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XY.OCR.AlibabaCloud", "XY.O
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XY.OCR.AlibabaCloudTests", "XY.OCR.AlibabaCloudTests\XY.OCR.AlibabaCloudTests.csproj", "{BE059AFC-FEBD-4BFD-AF65-02C866CCE1BA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XY.AspNetCore.Mvc.Validation", "XY.AspNetCore.Mvc.Validation\XY.AspNetCore.Mvc.Validation.csproj", "{C2D8081A-216A-4185-ACEC-8B8F07F987A7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -157,6 +159,18 @@ Global
 		{BE059AFC-FEBD-4BFD-AF65-02C866CCE1BA}.Release|x64.Build.0 = Release|Any CPU
 		{BE059AFC-FEBD-4BFD-AF65-02C866CCE1BA}.Release|x86.ActiveCfg = Release|Any CPU
 		{BE059AFC-FEBD-4BFD-AF65-02C866CCE1BA}.Release|x86.Build.0 = Release|Any CPU
+		{C2D8081A-216A-4185-ACEC-8B8F07F987A7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C2D8081A-216A-4185-ACEC-8B8F07F987A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C2D8081A-216A-4185-ACEC-8B8F07F987A7}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{C2D8081A-216A-4185-ACEC-8B8F07F987A7}.Debug|x64.Build.0 = Debug|Any CPU
+		{C2D8081A-216A-4185-ACEC-8B8F07F987A7}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C2D8081A-216A-4185-ACEC-8B8F07F987A7}.Debug|x86.Build.0 = Debug|Any CPU
+		{C2D8081A-216A-4185-ACEC-8B8F07F987A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C2D8081A-216A-4185-ACEC-8B8F07F987A7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C2D8081A-216A-4185-ACEC-8B8F07F987A7}.Release|x64.ActiveCfg = Release|Any CPU
+		{C2D8081A-216A-4185-ACEC-8B8F07F987A7}.Release|x64.Build.0 = Release|Any CPU
+		{C2D8081A-216A-4185-ACEC-8B8F07F987A7}.Release|x86.ActiveCfg = Release|Any CPU
+		{C2D8081A-216A-4185-ACEC-8B8F07F987A7}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

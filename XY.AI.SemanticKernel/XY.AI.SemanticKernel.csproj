@@ -9,13 +9,26 @@
     <MicrosoftExtensionsVersionModern>10.0.7</MicrosoftExtensionsVersionModern>
     <Authors>QiDeQian</Authors>
     <Company>山东新意软件科技有限公司</Company>
-    <Description>基于 Semantic Kernel 的 AI 结构化数据提取帮助类库</Description>
+    <Description>基于 Semantic Kernel 的 AI 能力扩展类库，提供结构化提取与可扩展模型调用支持。</Description>
     <Copyright>ShanDongXinYi Copyright © 2021~2026</Copyright>
     <PackageProjectUrl>https://github.com/qideqian/XY.CO2NET</PackageProjectUrl>
     <RepositoryUrl>https://github.com/qideqian/XY.CO2NET</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageTags>AI,SemanticKernel,DI</PackageTags>
-    <Version>1.0.0</Version>
+    <RepositoryBranch>master</RepositoryBranch>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageIcon>icon.png</PackageIcon>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageTags>XY.CO2NET,AI,SemanticKernel,OpenAI,StructuredData,DI</PackageTags>
+    <PackageReleaseNotes>
+      [新增] Added
+      - 增补 AI 结构化提取能力说明与 OpenAI 连接器说明。
+      [优化] Improved
+      - 统一 NuGet 元数据格式（Description/Tags/README/Icon/License/Repository）。
+      [修复] Fixed
+      - 修正发布说明与版本信息一致性，优化包检索呈现。
+    </PackageReleaseNotes>
+    <Version>2.0.8</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(TargetFramework)' == 'net6.0' ">
@@ -31,6 +44,11 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
     <PackageReference Include="Microsoft.Extensions.Options" />
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="\" />
+    <None Include="..\XY.OCR.AlibabaCloud\icon.png" Link="icon.png" Pack="true" PackagePath="\" />
   </ItemGroup>
 
 </Project>

@@ -2,8 +2,10 @@ using Microsoft.Extensions.Options;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.ChatCompletion;
 using System;
+using System.Globalization;
 using System.Linq;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 using XY.AI.SemanticKernel.StructuredData;
@@ -86,14 +88,10 @@ namespace XY.AI.SemanticKernel
 
             var message = await chatService.GetChatMessageContentAsync(chatHistory, executionSettings, _kernel, cancellationToken).ConfigureAwait(false);
             var cleanResponse = CleanAiResponse(message?.Content);
+            var serializerOptions = CreateSerializerOptions();
 
             try
             {
-                var serializerOptions = new JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = _options.PropertyNameCaseInsensitive
-                };
-
                 return JsonSerializer.Deserialize<T>(cleanResponse, serializerOptions);
             }
             catch (JsonException ex)
@@ -107,10 +105,7 @@ namespace XY.AI.SemanticKernel
                         var firstItem = jsonDocument.RootElement[0];
                         if (firstItem.ValueKind == JsonValueKind.Object)
                         {
-                            return JsonSerializer.Deserialize<T>(firstItem.GetRawText(), new JsonSerializerOptions
-                            {
-                                PropertyNameCaseInsensitive = _options.PropertyNameCaseInsensitive
-                            });
+                            return JsonSerializer.Deserialize<T>(firstItem.GetRawText(), serializerOptions);
                         }
                     }
                 }
@@ -120,6 +115,17 @@ namespace XY.AI.SemanticKernel
 
                 throw new InvalidOperationException($"无法将 AI 响应反序列化为 {typeof(T).Name}。响应内容：{cleanResponse}", ex);
             }
+        }
+
+        private JsonSerializerOptions CreateSerializerOptions()
+        {
+            var options = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = _options.PropertyNameCaseInsensitive
+            };
+
+            options.Converters.Add(new NullableDateTimeEmptyStringJsonConverter());
+            return options;
         }
 
         /// <summary>
@@ -187,6 +193,45 @@ namespace XY.AI.SemanticKernel
             var propertyDescriptions = string.Join(", ", properties.Select(p => $"{p.Name} ({p.PropertyType.Name})"));
 
             return $"请根据输入文本提取关键信息，并仅返回纯 JSON。JSON 结构必须严格匹配类型 {typeof(T).Name} 的属性：{propertyDescriptions}。如果无法提取，请返回空对象 {{}}。";
+        }
+
+        private sealed class NullableDateTimeEmptyStringJsonConverter : JsonConverter<DateTime?>
+        {
+            public override DateTime? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+            {
+                if (reader.TokenType == JsonTokenType.Null)
+                {
+                    return null;
+                }
+
+                if (reader.TokenType == JsonTokenType.String)
+                {
+                    var value = reader.GetString();
+                    if (string.IsNullOrWhiteSpace(value))
+                    {
+                        return null;
+                    }
+
+                    if (DateTime.TryParse(value, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind, out var dateTime))
+                    {
+                        return dateTime;
+                    }
+                }
+
+                throw new JsonException("DateTime 字段格式无效，期望 ISO 8601 日期字符串或 null。");
+            }
+
+            public override void Write(Utf8JsonWriter writer, DateTime? value, JsonSerializerOptions options)
+            {
+                if (value.HasValue)
+                {
+                    writer.WriteStringValue(value.Value);
+                }
+                else
+                {
+                    writer.WriteNullValue();
+                }
+            }
         }
     }
 }

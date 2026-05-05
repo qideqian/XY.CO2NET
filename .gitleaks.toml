@@ -1,0 +1,29 @@
+title = "XY.CO2NET gitleaks config"
+
+[extend]
+useDefault = true
+
+# 仅允许仓库中的示例占位值，避免误报。
+[[allowlists]]
+description = "Allow documentation placeholders"
+paths = [
+  '''^XY\.AI\.SemanticKernel/README\.md$''',
+  '''^XY\.OCR\.AlibabaCloud/README\.md$''',
+  '''^XY\.SMS/SmsPlatform/README\.md$'''
+]
+regexes = [
+  '''(?i)your-api-key''',
+  '''(?i)你的AccessKeyId''',
+  '''(?i)你的AccessKeySecret''',
+  '''(?i)SmsAccountPassword'''
+]
+
+[[allowlists]]
+description = "Allow unit-test fake credentials"
+paths = [
+  '''^XY\.OCR\.AlibabaCloudTests/.*\.cs$'''
+]
+regexes = [
+  '''(?i)AccessKeyId\s*=\s*"ak"''',
+  '''(?i)AccessKeySecret\s*=\s*"secret"'''
+]

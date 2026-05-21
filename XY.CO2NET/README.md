@@ -76,8 +76,8 @@ NET Core模式下通过`RegisterService.Start(XYSetting xySetting)`注册
 推送标签并出发Nuget发布
 ```
 cd 'D:\Project\GitHub\XY.CO2NET' 
-git tag -a v2.0.8 -m "Release v2.0.8" 
-git push origin refs/tags/v2.0.8
+git tag -a v2.0.9 -m "Release v2.0.9" 
+git push origin refs/tags/v2.0.9
 ```
 
 删除本地标签

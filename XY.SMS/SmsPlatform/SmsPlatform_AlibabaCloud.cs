@@ -7,8 +7,8 @@ namespace XY.SMS.SmsPlatform
 {
     public class SmsPlatform_AlibabaCloud : SmsPlatform, ISmsPlatform
     {
-        static String _accessKeyId;//你的accessKeyId，参考本文档步骤2
-        static String _accessKeySecret;//你的accessKeySecret，参考本文档步骤2
+        static String _accessKeyId = default!;//你的accessKeyId，参考本文档步骤2
+        static String _accessKeySecret = default!;//你的accessKeySecret，参考本文档步骤2
 
         public SmsPlatform_AlibabaCloud(string accessKeyId, string accessKeySecret)
         {
@@ -23,10 +23,10 @@ namespace XY.SMS.SmsPlatform
             throw new NotImplementedException();
         }
 
-        public Task<SmsResult> Send(string TemplateCode, string TemplateParam, string SignName, string PhoneNumbers, Action<string> SaveToDatabaseCallback = null)
+        public static Task<SmsResult> Send(string TemplateCode, string TemplateParam, string SignName, string PhoneNumbers, Action<string> SaveToDatabaseCallback)
         {
             AlibabaCloud.SDK.Dysmsapi20170525.Client client = CreateClient();
-            AlibabaCloud.SDK.Dysmsapi20170525.Models.SendSmsRequest sendSmsRequest = new AlibabaCloud.SDK.Dysmsapi20170525.Models.SendSmsRequest
+            AlibabaCloud.SDK.Dysmsapi20170525.Models.SendSmsRequest sendSmsRequest = new()
             {
                 PhoneNumbers = PhoneNumbers,
                 SignName = SignName,
@@ -39,6 +39,7 @@ namespace XY.SMS.SmsPlatform
             {
                 // 复制代码运行请自行打印 API 的返回值
                 var sendSmsResponse = client.SendSmsWithOptions(sendSmsRequest, new AlibabaCloud.TeaUtil.Models.RuntimeOptions());
+                SaveToDatabaseCallback?.Invoke(sendSmsResponse.Body.Message);
                 return Task.FromResult(new SmsResult() { SmsStatus = SmsStatus.成功, MSG = sendSmsResponse.Body.Message });
             }
             catch (TeaException error)
@@ -49,11 +50,12 @@ namespace XY.SMS.SmsPlatform
                 // 诊断地址
                 Console.WriteLine(error.Data["Recommend"]);
                 AlibabaCloud.TeaUtil.Common.AssertAsString(error.Message);
+                SaveToDatabaseCallback?.Invoke($"{error.Message}\r\n\r\n诊断地址：{error.Data["Recommend"]}");
                 return Task.FromResult(new SmsResult() { SmsStatus = SmsStatus.未知错误, MSG = $"{error.Message}\r\n\r\n诊断地址：{error.Data["Recommend"]}" });
             }
             catch (Exception _error)
             {
-                TeaException error = new TeaException(new Dictionary<string, object>
+                TeaException error = new(new Dictionary<string, object>
                 {
                     { "message", _error.Message }
                 });
@@ -63,11 +65,12 @@ namespace XY.SMS.SmsPlatform
                 // 诊断地址
                 Console.WriteLine(error.Data["Recommend"]);
                 AlibabaCloud.TeaUtil.Common.AssertAsString(error.Message);
+                SaveToDatabaseCallback?.Invoke($"{error.Message}\r\n\r\n诊断地址：{error.Data["Recommend"]}");
                 return Task.FromResult(new SmsResult() { SmsStatus = SmsStatus.未知错误, MSG = $"{error.Message}\r\n\r\n诊断地址：{error.Data["Recommend"]}" });
             }
         }
 
-        public override Task<SmsResult> Send(string MSGContent, string SignName, string PhoneNumbers, Action<string> SaveToDatabaseCallback = null)
+        public override Task<SmsResult> Send(string MSGContent, string SignName, string PhoneNumbers, Action<string> SaveToDatabaseCallback)
         {
             var _split = MSGContent.Split('#');
             if (_split.Length != 2) throw new Exception("参数错误，阿里云模版请使用“短信编码Code#短信参数”");
@@ -88,22 +91,22 @@ namespace XY.SMS.SmsPlatform
         public static AlibabaCloud.SDK.Dysmsapi20170525.Client CreateClient()
         {
             // 工程代码建议使用更安全的无AK方式，凭据配置方式请参见：https://help.aliyun.com/document_detail/378671.html。
-            Aliyun.Credentials.Client credential = new Aliyun.Credentials.Client();
-            AlibabaCloud.OpenApiClient.Models.Config config = new AlibabaCloud.OpenApiClient.Models.Config
+            Aliyun.Credentials.Client credential = new();
+            AlibabaCloud.OpenApiClient.Models.Config config = new()
             {
                 AccessKeyId = _accessKeyId,
                 AccessKeySecret = _accessKeySecret,
-                Credential = credential
+                Credential = credential,
+                // Endpoint 请参考 https://api.aliyun.com/product/Dysmsapi
+                Endpoint = "dysmsapi.aliyuncs.com"
             };
-            // Endpoint 请参考 https://api.aliyun.com/product/Dysmsapi
-            config.Endpoint = "dysmsapi.aliyuncs.com";
             return new AlibabaCloud.SDK.Dysmsapi20170525.Client(config);
         }
 
         /// <summary>
         /// 发送短信（可选日志记录，Action<Action<string>>日志回调）
         /// </summary>
-        public Task<SmsResult> Send(string TemplateCode, string TemplateParam, string SignName, string PhoneNumbers, bool writeLog, Action<Action<string>> logAction, Action<string> SaveToDatabaseCallback = null)
+        public static Task<SmsResult> Send(string TemplateCode, string TemplateParam, string SignName, string PhoneNumbers, bool writeLog, Action<Action<string>> logAction, Action<string> SaveToDatabaseCallback)
         {
             var resultTask = Send(TemplateCode, TemplateParam, SignName, PhoneNumbers, SaveToDatabaseCallback);
             if (writeLog && logAction != null)
@@ -120,7 +123,7 @@ namespace XY.SMS.SmsPlatform
         /// <summary>
         /// 发送短信（可选日志记录，直接传递日志内容）
         /// </summary>
-        public Task<SmsResult> Send(string TemplateCode, string TemplateParam, string SignName, string PhoneNumbers, bool writeLog, string logExtra, Action<string> SaveToDatabaseCallback = null)
+        public static Task<SmsResult> Send(string TemplateCode, string TemplateParam, string SignName, string PhoneNumbers, bool writeLog, string logExtra, Action<string> SaveToDatabaseCallback)
         {
             var resultTask = Send(TemplateCode, TemplateParam, SignName, PhoneNumbers, SaveToDatabaseCallback);
             if (writeLog)

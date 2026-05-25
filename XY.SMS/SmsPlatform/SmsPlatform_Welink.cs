@@ -12,7 +12,7 @@ namespace XY.SMS.SmsPlatform
 {
     public class SmsPlatform_Welink : SmsPlatform, ISmsPlatform
     {
-        private static readonly HttpClient _httpClient = new HttpClient();
+        private static readonly HttpClient _httpClient = new();
 
         private string AccountId { get; set; }
         private string Password { get; set; }
@@ -31,7 +31,7 @@ namespace XY.SMS.SmsPlatform
             throw new NotImplementedException();
         }
 
-        public override async Task<SmsResult> Send(string MSGContent, string SignName, string PhoneNumbers, Action<string> SaveToDatabaseCallback = null)
+        public override async Task<SmsResult> Send(string MSGContent, string SignName, string PhoneNumbers, Action<string> SaveToDatabaseCallback)
         {
             var RegexStr = @"【[\S]+】";
             if (!Regex.IsMatch(MSGContent, RegexStr)) MSGContent += $"【{SignName}】";
@@ -53,31 +53,29 @@ namespace XY.SMS.SmsPlatform
                 ["Content"] = MSGContent
             };
 
-            using (var response = await _httpClient.PostAsync(SmsServiceAddress, new FormUrlEncodedContent(requestData)).ConfigureAwait(false))
+            using var response = await _httpClient.PostAsync(SmsServiceAddress, new FormUrlEncodedContent(requestData)).ConfigureAwait(false);
+            if (response.IsSuccessStatusCode)
             {
-                if (response.IsSuccessStatusCode)
+                var json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                var result = Newtonsoft.Json.JsonConvert.DeserializeObject<SelinkResult>(json);
+                if (result?.Result == "succ")
                 {
-                    var json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-                    var result = Newtonsoft.Json.JsonConvert.DeserializeObject<SelinkResult>(json);
-                    if (result.Result == "succ")
-                    {
-                        XYTrace.SendCustomLog("【短信发送】", $"发送短信成功：{MSGContent}，号码：{PhoneNumbers}。状态：{result.Result}（{result.Reason}）。发送通道：51welink");
-                        if (SaveToDatabaseCallback != null) SaveToDatabaseCallback($"{result.Result}|{result.Reason}");
-                        return new SmsResult() { SmsStatus = SmsStatus.成功, MSG = result.Reason };
-                    }
-                    else
-                    {
-                        XYTrace.SendCustomLog("【发送短信失败】", $"内容：{MSGContent}，号码：{PhoneNumbers}。状态：{result.Result}（{result.Reason}）。发送通道：51welink");
-                        if (SaveToDatabaseCallback != null) SaveToDatabaseCallback(result.Reason);
-                        return new SmsResult() { SmsStatus = SmsStatus.未知错误, MSG = result.Reason };
-                    }
+                    XYTrace.SendCustomLog("【短信发送】", $"发送短信成功：{MSGContent}，号码：{PhoneNumbers}。状态：{result.Result}（{result.Reason}）。发送通道：51welink");
+                    SaveToDatabaseCallback?.Invoke($"{result.Result}|{result.Reason}");
+                    return new SmsResult() { SmsStatus = SmsStatus.成功, MSG = result.Reason };
                 }
                 else
                 {
-                    XYTrace.SendCustomLog("【发送短信失败】", $"内容：{MSGContent}，号码：{PhoneNumbers}。发送通道：51welink");
-                    if (SaveToDatabaseCallback != null) SaveToDatabaseCallback("请求异常！");
-                    return new SmsResult() { SmsStatus = SmsStatus.未知错误 };
+                    XYTrace.SendCustomLog("【发送短信失败】", $"内容：{MSGContent}，号码：{PhoneNumbers}。状态：{result?.Result}（{result?.Reason}）。发送通道：51welink");
+                    SaveToDatabaseCallback?.Invoke(result?.Reason ?? "");
+                    return new SmsResult() { SmsStatus = SmsStatus.未知错误, MSG = result?.Reason ?? "" };
                 }
+            }
+            else
+            {
+                XYTrace.SendCustomLog("【发送短信失败】", $"内容：{MSGContent}，号码：{PhoneNumbers}。发送通道：51welink");
+                SaveToDatabaseCallback?.Invoke("请求异常！");
+                return new SmsResult() { SmsStatus = SmsStatus.未知错误 };
             }
         }
 
@@ -96,11 +94,11 @@ namespace XY.SMS.SmsPlatform
             /// <summary>
             /// 返回状态值，返回succ标识提交成功
             /// </summary>
-            public string Result { get; set; }
+            public string Result { get; set; } = "";
             /// <summary>
             /// 返回状态描述
             /// </summary>
-            public string Reason { get; set; }
+            public string Reason { get; set; } = "";
             /// <summary>
             /// 信息批次号
             /// </summary>
@@ -114,7 +112,7 @@ namespace XY.SMS.SmsPlatform
         /// <summary>
         /// 发送短信（可选日志记录，Action<Action<string>>日志回调）
         /// </summary>
-        public Task<SmsResult> Send(string MSGContent, string SignName, string PhoneNumbers, bool writeLog, Action<Action<string>> logAction, Action<string> SaveToDatabaseCallback = null)
+        public Task<SmsResult> Send(string MSGContent, string SignName, string PhoneNumbers, bool writeLog, Action<Action<string>> logAction, Action<string> SaveToDatabaseCallback)
         {
             var resultTask = Send(MSGContent, SignName, PhoneNumbers, SaveToDatabaseCallback);
             if (writeLog && logAction != null)
@@ -131,7 +129,7 @@ namespace XY.SMS.SmsPlatform
         /// <summary>
         /// 发送短信（可选日志记录，直接传递日志内容）
         /// </summary>
-        public Task<SmsResult> Send(string MSGContent, string SignName, string PhoneNumbers, bool writeLog, string logExtra, Action<string> SaveToDatabaseCallback = null)
+        public Task<SmsResult> Send(string MSGContent, string SignName, string PhoneNumbers, bool writeLog, string logExtra, Action<string> SaveToDatabaseCallback)
         {
             var resultTask = Send(MSGContent, SignName, PhoneNumbers, SaveToDatabaseCallback);
             if (writeLog)

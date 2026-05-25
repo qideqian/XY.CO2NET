@@ -10,16 +10,16 @@ namespace XY.SMS.SmsPlatform
 {
     public class SmsPlatform_Aliyun : SmsPlatform, ISmsPlatform
     {
-        static String product = "Dysmsapi";//短信API产品名称（短信产品名固定，无需修改）
-        static String domain = "dysmsapi.aliyuncs.com";//短信API产品域名（接口地址固定，无需修改）
-        static String _accessKeyId;//你的accessKeyId，参考本文档步骤2
-        static String _accessKeySecret;//你的accessKeySecret，参考本文档步骤2
-        static IClientProfile profile = DefaultProfile.GetProfile("cn-hangzhou", _accessKeyId, _accessKeySecret);
+        private static readonly String product = "Dysmsapi";//短信API产品名称（短信产品名固定，无需修改）
+        private static readonly String domain = "dysmsapi.aliyuncs.com";//短信API产品域名（接口地址固定，无需修改）
+        private static String _accessKeyId = default!;//你的accessKeyId，参考本文档步骤2
+        private static String _accessKeySecret = default!;//你的accessKeySecret，参考本文档步骤2
+        private static readonly IClientProfile profile = DefaultProfile.GetProfile("cn-hangzhou", _accessKeyId, _accessKeySecret);
         //IAcsClient client = new DefaultAcsClient(profile);
         // SingleSendSmsRequest request = new SingleSendSmsRequest();
         //初始化ascClient,暂时不支持多region（请勿修改）
-        static IAcsClient acsClient = new DefaultAcsClient(profile);
-        static SendSmsRequest request = new SendSmsRequest();
+        private static readonly DefaultAcsClient acsClient = new(profile);
+        private static readonly SendSmsRequest request = new();
 
         public SmsPlatform_Aliyun(string accessKeyId, string accessKeySecret)
         {
@@ -38,7 +38,7 @@ namespace XY.SMS.SmsPlatform
         /// <param name="logAction">日志内容回调（如需额外参数如IP，调用方需提供）</param>
         /// <param name="SaveToDatabaseCallback">保存到数据库回调</param>
         /// <returns></returns>
-        public Task<SmsResult> Send(string TemplateCode, string TemplateParam, string SignName, string PhoneNumbers, bool writeLog, Action<Action<string>> logAction, Action<string> SaveToDatabaseCallback = null)
+        public Task<SmsResult> Send(string TemplateCode, string TemplateParam, string SignName, string PhoneNumbers, bool writeLog, Action<Action<string>> logAction, Action<string> SaveToDatabaseCallback)
         {
             var resultTask = Send(TemplateCode, TemplateParam, SignName, PhoneNumbers, SaveToDatabaseCallback);
             if (writeLog && logAction != null)
@@ -63,7 +63,7 @@ namespace XY.SMS.SmsPlatform
         /// <param name="logAction">日志内容回调（如需额外参数如IP，调用方需提供）</param>
         /// <param name="SaveToDatabaseCallback">保存到数据库回调</param>
         /// <returns></returns>
-        public Task<SmsResult> Send(string TemplateCode, string TemplateParam, string SignName, string PhoneNumbers, bool writeLog, string logExtra, Action<string> SaveToDatabaseCallback = null)
+        public Task<SmsResult> Send(string TemplateCode, string TemplateParam, string SignName, string PhoneNumbers, bool writeLog, string logExtra, Action<string> SaveToDatabaseCallback)
         {
             var resultTask = Send(TemplateCode, TemplateParam, SignName, PhoneNumbers, SaveToDatabaseCallback);
             if (writeLog)
@@ -89,7 +89,7 @@ namespace XY.SMS.SmsPlatform
         /// <param name="SignName">短信签名</param>
         /// <param name="PhoneNumbers">必填:待发送手机号。支持以逗号分隔的形式进行批量调用，批量上限为1000个手机号码,批量调用相对于单条调用及时性稍有延迟,验证码类型的短信推荐使用单条调用的方式，发送国际/港澳台消息时，接收号码格式为00+国际区号+号码，如“0085200000000”</param>
         /// <returns></returns>
-        public Task<SmsResult> Send(string TemplateCode, string TemplateParam, string SignName, string PhoneNumbers, Action<string> SaveToDatabaseCallback = null)
+        public Task<SmsResult> Send(string TemplateCode, string TemplateParam, string SignName, string PhoneNumbers, Action<string> SaveToDatabaseCallback)
         {
             try
             {
@@ -111,25 +111,25 @@ namespace XY.SMS.SmsPlatform
                 //请求失败这里会抛ClientException异常
                 SendSmsResponse sendSmsResponse = acsClient.GetAcsResponse(request);
                 XYTrace.SendCustomLog("【短信发送】", $"编号：{TemplateCode}，模版：{TemplateParam}，签名：{SignName}，号码：{PhoneNumbers}。状态：{sendSmsResponse.Code}（{sendSmsResponse.Message}）。发送通道：Aliyun");
-                if (SaveToDatabaseCallback != null) SaveToDatabaseCallback(sendSmsResponse.Message);
+                SaveToDatabaseCallback?.Invoke(sendSmsResponse.Message);
                 return Task.FromResult(new SmsResult() { SmsStatus = SmsStatus.成功, MSG = sendSmsResponse.Message });
             }
             catch (ServerException e)
             {
                 XYTrace.SendCustomLog("【发送短信失败】", $"编号：{TemplateCode}，模版：{TemplateParam}，签名：{SignName}，号码：{PhoneNumbers}。发送通道：Aliyun");
-                if (SaveToDatabaseCallback != null) SaveToDatabaseCallback(e.Message);
+                SaveToDatabaseCallback?.Invoke(e.Message);
                 return Task.FromResult(new SmsResult() { SmsStatus = SmsStatus.未知错误, MSG = e.Message });
             }
             catch (ClientException e)
             {
                 XYTrace.SendCustomLog("【发送短信失败】", $"编号：{TemplateCode}，模版：{TemplateParam}，签名：{SignName}，号码：{PhoneNumbers}。发送通道：Aliyun");
-                if (SaveToDatabaseCallback != null) SaveToDatabaseCallback(e.Message);
+                SaveToDatabaseCallback?.Invoke(e.Message);
                 return Task.FromResult(new SmsResult() { SmsStatus = SmsStatus.未知错误, MSG = e.Message });
             }
             catch (Exception e)
             {
                 XYTrace.SendCustomLog("【发送短信失败】", $"编号：{TemplateCode}，模版：{TemplateParam}，签名：{SignName}，号码：{PhoneNumbers}。发送通道：Aliyun");
-                if (SaveToDatabaseCallback != null) SaveToDatabaseCallback(e.Message);
+                SaveToDatabaseCallback?.Invoke(e.Message);
                 return Task.FromResult(new SmsResult() { SmsStatus = SmsStatus.未知错误, MSG = e.Message });
             }
         }
@@ -144,7 +144,7 @@ namespace XY.SMS.SmsPlatform
         /// <param name="SaveToDatabaseCallback"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public override Task<SmsResult> Send(string MSGContent, string SignName, string PhoneNumbers, Action<string> SaveToDatabaseCallback = null)
+        public override Task<SmsResult> Send(string MSGContent, string SignName, string PhoneNumbers, Action<string> SaveToDatabaseCallback)
         {
             var _split = MSGContent.Split('#');
             if (_split.Length != 2) throw new Exception("参数错误，阿里云模版请使用“短信编码Code#短信参数”");

@@ -15,7 +15,7 @@ namespace XY.SMS.SmsPlatform
         public static ISmsPlatform GetSmsPlatform(IServiceProvider serviceProvider, bool constraintSend = false)
         {
             var xYSmsSetting = serviceProvider.GetService<IOptions<XYSmsSetting>>();
-            return GetSmsPlatform(xYSmsSetting.Value, constraintSend);
+            return GetSmsPlatform(xYSmsSetting!.Value, constraintSend);
         }
 
         /// <summary>

@@ -18,7 +18,7 @@ namespace XY.SMS.SmsPlatform
         /// <param name="PhoneNumbers"></param>
         /// <param name="SaveToDatabaseCallback">发送回调，传入发送结果</param>
         /// <returns></returns>
-        Task<SmsResult> Send(string MSGContent, string SignName, string PhoneNumbers, Action<string> SaveToDatabaseCallback = null);
+        Task<SmsResult> Send(string MSGContent, string SignName, string PhoneNumbers, Action<string> SaveToDatabaseCallback);
 
         /// <summary>
         /// 获取剩余短信数量
@@ -30,13 +30,13 @@ namespace XY.SMS.SmsPlatform
     public abstract class SmsPlatform : ISmsPlatform
     {
         public abstract string SmsServiceAddress { get; }
-        public XYSmsSetting Setting { get; set; }
-        public abstract Task<SmsResult> Send(string MSGContent, string SignName, string PhoneNumbers, Action<string> SaveToDatabaseCallback = null);
+        public XYSmsSetting Setting { get; set; } = default!;
+        public abstract Task<SmsResult> Send(string MSGContent, string SignName, string PhoneNumbers, Action<string> SaveToDatabaseCallback);
         public abstract string GetLastCount();
-        protected string UrlEncode(string url, Encoding encoding = null)
+        protected static string UrlEncode(string url, Encoding encoding)
         {
-            if (encoding == null) encoding = Encoding.UTF8;
-            StringBuilder sb = new StringBuilder();
+            encoding ??= Encoding.UTF8;
+            StringBuilder sb = new();
             byte[] bytes = encoding.GetBytes(url);
             for (int i = 0; i < bytes.Length; i++)
             {
@@ -48,7 +48,7 @@ namespace XY.SMS.SmsPlatform
         /// 统一写入短信日志
         /// </summary>
         /// <param name="content">日志内容</param>
-        protected void WriteSmsLog(string content)
+        protected static void WriteSmsLog(string content)
         {
             SmsLogHelper.WriteLog(content);
         }

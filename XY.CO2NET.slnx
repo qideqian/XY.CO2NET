@@ -1,0 +1,21 @@
+<Solution>
+  <Configurations>
+    <Platform Name="Any CPU" />
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Folder Name="/Cache/">
+    <Project Path="XY.CO2NET.Cache.Redis/XY.CO2NET.Cache.Redis.csproj" />
+  </Folder>
+  <Folder Name="/Tests/">
+    <Project Path="XY.AI.SemanticKernelTests/XY.AI.SemanticKernelTests.csproj" />
+    <Project Path="XY.CO2NETTests/XY.CO2NETTests.csproj" />
+    <Project Path="XY.OCR.AlibabaCloudTests/XY.OCR.AlibabaCloudTests.csproj" />
+  </Folder>
+  <Project Path="XY.AI.SemanticKernel/XY.AI.SemanticKernel.csproj" />
+  <Project Path="XY.AspNetCore.Mvc.Validation/XY.AspNetCore.Mvc.Validation.csproj" />
+  <Project Path="XY.CO2NET/XY.CO2NET.csproj" />
+  <Project Path="XY.OCR.AlibabaCloud/XY.OCR.AlibabaCloud.csproj" />
+  <Project Path="XY.OCR.UmiOCR/XY.OCR.UmiOCR.csproj" />
+  <Project Path="XY.SMS/XY.SMS.csproj" />
+</Solution>

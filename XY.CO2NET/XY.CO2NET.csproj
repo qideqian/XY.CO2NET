@@ -1,13 +1,14 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>NET48;netstandard2.0;net6.0;net10.0</TargetFrameworks>
+    <TargetFrameworks>net48;netstandard2.0;net6.0;net10.0</TargetFrameworks>
     <LangVersion>8.0</LangVersion>
     <MicrosoftExtensionsVersionLegacy>6.0.0</MicrosoftExtensionsVersionLegacy>
+    <MicrosoftExtensionsVersionNet6>8.0.0</MicrosoftExtensionsVersionNet6>
     <MicrosoftExtensionsVersionModern>10.0.0</MicrosoftExtensionsVersionModern>
     <Authors>QiDeQian</Authors>
     <Company>山东新意软件科技有限公司</Company>
-    <Description>基础通用能力类库，提供缓存、加密、HTTP、线程与常用工具扩展，适用于 NET48/netstandard2.0/net6.0/net10.0。</Description>
+    <Description>基础通用能力类库，提供缓存、加密、HTTP、线程与常用工具扩展，适用于 net48/netstandard2.0/net6.0/net10.0。</Description>
     <Copyright>ShanDongXinYi Copyright © 2021~2026</Copyright>
     <PackageProjectUrl>https://github.com/qideqian/XY.CO2NET</PackageProjectUrl>
     <RepositoryType>git</RepositoryType>
@@ -30,7 +31,7 @@
     <Version>2.0.8</Version>
   </PropertyGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'NET48' ">
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
     <Reference Include="System.Web" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Configuration" />
@@ -45,7 +46,16 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
   </ItemGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'NET48' Or '$(TargetFramework)' == 'net6.0' Or '$(TargetFramework)' == 'net10.0' ">
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' ">
+    <PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="$(MicrosoftExtensionsVersionNet6)" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="$(MicrosoftExtensionsVersionNet6)" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="$(MicrosoftExtensionsVersionNet6)" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="$(MicrosoftExtensionsVersionNet6)" />
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="$(MicrosoftExtensionsVersionNet6)" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net48' Or '$(TargetFramework)' == 'net10.0' ">
     <PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="$(MicrosoftExtensionsVersionModern)" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="$(MicrosoftExtensionsVersionModern)" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="$(MicrosoftExtensionsVersionModern)" />

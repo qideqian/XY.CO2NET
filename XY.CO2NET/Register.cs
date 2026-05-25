@@ -5,7 +5,7 @@ using XY.CO2NET.Cache;
 using XY.CO2NET.RegisterServices;
 using XY.CO2NET.Threads;
 
-#if !NET48
+#if !net48
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 #endif
@@ -17,7 +17,7 @@ namespace XY.CO2NET
     /// </summary>
     public static class Register
     {
-#if !NET48
+#if !net48
         /// <summary>
         /// 注册 XYSetting 到 DI 容器
         /// </summary>
@@ -127,7 +127,7 @@ namespace XY.CO2NET
             return registerService;
         }
 
-#if !NET48
+#if !net48
         /// <summary>
         /// 开始 XY.CO2NET 初始化参数流程
         /// </summary>
@@ -163,7 +163,7 @@ namespace XY.CO2NET
             CacheStrategyFactory.RegisterObjectCacheStrategy(() => LocalObjectCacheStrategy.Instance);
         }
 
-#if !NET48
+#if !net48
         /// <summary>
         /// 立即使用本地对象缓存策略，并注册 .NET Core DI
         /// </summary>

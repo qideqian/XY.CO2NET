@@ -1,4 +1,4 @@
-﻿#if !NET48
+﻿#if !net48
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -28,7 +28,7 @@ namespace XY.CO2NET.Cache.Redis
             CacheStrategyFactory.RegisterObjectCacheStrategy(() => RedisObjectCacheStrategy.Instance);//键值Redis
         }
 
-#if !NET48
+#if !net48
         /// <summary>
         /// 立即使用键值对方式储存的 Redis（推荐），并注册 .NET Core DI
         /// </summary>
@@ -92,7 +92,7 @@ namespace XY.CO2NET.Cache.Redis
             CacheStrategyFactory.RegisterObjectCacheStrategy(() => RedisHashSetObjectCacheStrategy.Instance);//Hash格式储存的Redis
         }
 
-#if !NET48
+#if !net48
         /// <summary>
         /// 立即使用 HashSet 方式储存的 Redis 缓存策略，并注册 .NET Core DI
         /// </summary>

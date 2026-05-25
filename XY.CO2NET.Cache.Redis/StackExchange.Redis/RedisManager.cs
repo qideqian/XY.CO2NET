@@ -11,7 +11,7 @@ namespace XY.CO2NET.Cache.Redis
         /// <summary>
         /// _redis(ConnectionMultiplexer)单例
         /// </summary>
-        internal static ConnectionMultiplexer _redis
+        internal static ConnectionMultiplexer Redis
         {
             get
             {
@@ -32,7 +32,7 @@ namespace XY.CO2NET.Cache.Redis
         /// <summary>
         /// 链接设置字符串
         /// </summary>
-        public static string ConfigurationOption { get; set; }
+        public static string? ConfigurationOption { get; set; }
 
 
         /// <summary>
@@ -40,7 +40,7 @@ namespace XY.CO2NET.Cache.Redis
         /// </summary>
         public static ConnectionMultiplexer Manager
         {
-            get { return _redis; }
+            get { return Redis; }
         }
 
         /// <summary>
@@ -52,7 +52,7 @@ namespace XY.CO2NET.Cache.Redis
             return "localhost";
         }
 
-        private static ConnectionMultiplexer GetManager(string connectionString = null)
+        private static ConnectionMultiplexer GetManager(string connectionString = default!)
         {
             if (string.IsNullOrEmpty(connectionString))
             {

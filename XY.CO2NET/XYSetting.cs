@@ -49,7 +49,7 @@
 
         #endregion
 
-#if NET48
+#if net48
         /// <summary>
         /// 从 Web.Config 文件自动生成 XYSetting
         /// </summary>

@@ -25,7 +25,7 @@ namespace XY.CO2NET.RegisterServices
             Config.XYSetting = xySetting ?? new XYSetting();
         }
 
-#if !NET48
+#if !net48
         /// <summary>
         /// 开始 XY.CO2NET SDK 初始化参数流程（.NET Core）
         /// </summary>

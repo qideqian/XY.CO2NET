@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using System.Timers;
-#if NET48
+#if net48
 using WebCache = System.Web.Caching;
 #endif
 
@@ -49,7 +49,7 @@ namespace XY.CO2NET.Helpers
             }
         }
 
-#if NET48
+#if net48
         /// <summary>
         /// 防抖相关数据存储
         /// </summary>

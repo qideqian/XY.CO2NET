@@ -21,7 +21,7 @@ namespace XY.CO2NET.Utilities
             using var ms = new MemoryStream();
             stream.CopyTo(ms);
             var arr = ms.ToArray();
-#if NET48
+#if net48
             return Convert.ToBase64String(arr, Base64FormattingOptions.None);
 #else
             return Convert.ToBase64String(arr);
@@ -77,7 +77,7 @@ namespace XY.CO2NET.Utilities
             using var ms = new MemoryStream();
             await stream.CopyToAsync(ms).ConfigureAwait(false);
             var arr = ms.ToArray();
-#if NET48
+#if net48
             return Convert.ToBase64String(arr, Base64FormattingOptions.None);
 #else
             return Convert.ToBase64String(arr);

@@ -1,4 +1,4 @@
-﻿#if !NET48
+﻿#if !net48
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;

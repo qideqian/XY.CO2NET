@@ -48,7 +48,7 @@ XY.CO2NET.Trace.XYTrace.XXXLog("MSG");
 
 > 各项初始化配置
 
-NET48模式下通过`RegisterService.Start(XYSetting xySetting)`注册
+net48模式下通过`RegisterService.Start(XYSetting xySetting)`注册
 
 NET Core模式下通过`RegisterService.Start(XYSetting xySetting)`注册
 

@@ -16,8 +16,8 @@ namespace XY.CO2NET.Cache.Redis
         /// </summary>
         protected class HashKeyAndField
         {
-            public string Key { get; set; }
-            public string Field { get; set; }
+            public string? Key { get; set; }
+            public string? Field { get; set; }
         }
 
         #region 单例
@@ -45,7 +45,7 @@ namespace XY.CO2NET.Cache.Redis
             {
             }
             //将instance设为一个初始化的BaseCacheStrategy新实例
-            internal static readonly RedisHashSetObjectCacheStrategy instance = new RedisHashSetObjectCacheStrategy();
+            internal static readonly RedisHashSetObjectCacheStrategy instance = new();
         }
 
         #endregion
@@ -59,7 +59,7 @@ namespace XY.CO2NET.Cache.Redis
         protected HashKeyAndField GetHashKeyAndField(string key, bool isFullKey = false)
         {
             var finalFullKey = base.GetFinalKey(key, isFullKey);
-            var index = finalFullKey.LastIndexOf(":");
+            var index = finalFullKey.LastIndexOf(':');
 
             if (index == -1)
             {
@@ -95,12 +95,12 @@ namespace XY.CO2NET.Cache.Redis
         {
             if (string.IsNullOrEmpty(key))
             {
-                return null;
+                return null!;
             }
 
             if (!CheckExisted(key, isFullKey))
             {
-                return null;
+                return null!;
             }
 
             var hashKeyAndField = this.GetHashKeyAndField(key, isFullKey);
@@ -117,12 +117,12 @@ namespace XY.CO2NET.Cache.Redis
         {
             if (string.IsNullOrEmpty(key))
             {
-                return default(T);
+                return default!;
             }
 
             if (!CheckExisted(key, isFullKey))
             {
-                return default(T);
+                return default!;
             }
 
             var hashKeyAndField = this.GetHashKeyAndField(key, isFullKey);
@@ -133,7 +133,7 @@ namespace XY.CO2NET.Cache.Redis
                 return value.ToString().DeserializeFromCache<T>();
             }
 
-            return default(T);
+            return default!;
         }
 
         /// <summary>
@@ -235,11 +235,11 @@ namespace XY.CO2NET.Cache.Redis
         {
             if (string.IsNullOrEmpty(key))
             {
-                return null;
+                return null!;
             }
             if (!await CheckExistedAsync(key, isFullKey).ConfigureAwait(false))
             {
-                return null;
+                return null!;
             }
             var hashKeyAndField = this.GetHashKeyAndField(key, isFullKey);
             var value = await _cacheDatabase.HashGetAsync(hashKeyAndField.Key, hashKeyAndField.Field).ConfigureAwait(false);
@@ -254,11 +254,11 @@ namespace XY.CO2NET.Cache.Redis
         {
             if (string.IsNullOrEmpty(key))
             {
-                return default(T);
+                return default!;
             }
             if (!await CheckExistedAsync(key, isFullKey).ConfigureAwait(false))
             {
-                return default(T);
+                return default!;
             }
             var hashKeyAndField = this.GetHashKeyAndField(key, isFullKey);
             var value = await _cacheDatabase.HashGetAsync(hashKeyAndField.Key, hashKeyAndField.Field).ConfigureAwait(false);
@@ -266,7 +266,7 @@ namespace XY.CO2NET.Cache.Redis
             {
                 return value.ToString().DeserializeFromCache<T>();
             }
-            return default(T);
+            return default!;
         }
 
         /// <summary>

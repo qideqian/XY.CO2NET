@@ -1,4 +1,5 @@
-﻿using System;
+﻿using StackExchange.Redis;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -33,7 +34,7 @@ namespace XY.CO2NET.Cache.Redis
             {
             }
             //将instance设为一个初始化的BaseCacheStrategy新实例
-            internal static readonly RedisObjectCacheStrategy instance = new RedisObjectCacheStrategy();
+            internal static readonly RedisObjectCacheStrategy instance = new();
         }
 
         #endregion
@@ -58,12 +59,12 @@ namespace XY.CO2NET.Cache.Redis
         {
             if (string.IsNullOrEmpty(key))
             {
-                return null;
+                return null!;
             }
 
             if (!CheckExisted(key, isFullKey))
             {
-                return null;
+                return null!;
             }
 
             var cacheKey = GetFinalKey(key, isFullKey);
@@ -80,12 +81,12 @@ namespace XY.CO2NET.Cache.Redis
         {
             if (string.IsNullOrEmpty(key))
             {
-                return default(T);
+                return default!;
             }
 
             if (!CheckExisted(key, isFullKey))
             {
-                return default(T);
+                return default!;
             }
 
             var cacheKey = GetFinalKey(key, isFullKey);
@@ -96,7 +97,7 @@ namespace XY.CO2NET.Cache.Redis
                 return value.ToString().DeserializeFromCache<T>();
             }
 
-            return default(T);
+            return default!;
         }
 
         /// <summary>
@@ -108,10 +109,10 @@ namespace XY.CO2NET.Cache.Redis
             var keyPrefix = GetFinalKey("");//获取带XY:DefaultCache:前缀的Key（[DefaultCache]可配置）
             var dic = new Dictionary<string, object>();
 
-            var keys = GetServer().Keys(database: _cacheDatabase.Database, pattern: keyPrefix + "*", pageSize: 99999);
-            foreach (var redisKey in keys)
+            IEnumerable<RedisKey> keys = GetServer().Keys(database: _cacheDatabase.Database, pattern: keyPrefix + "*", pageSize: 99999);
+            foreach (RedisKey redisKey in keys)
             {
-                dic[redisKey] = Get(redisKey, true);
+                dic[redisKey!] = Get(redisKey!, true);
             }
             return dic;
         }
@@ -174,12 +175,12 @@ namespace XY.CO2NET.Cache.Redis
         {
             if (string.IsNullOrEmpty(key))
             {
-                return null;
+                return null!;
             }
 
             if (!await CheckExistedAsync(key, isFullKey).ConfigureAwait(false))
             {
-                return null;
+                return null!;
             }
 
             var cacheKey = GetFinalKey(key, isFullKey);
@@ -196,12 +197,12 @@ namespace XY.CO2NET.Cache.Redis
         {
             if (string.IsNullOrEmpty(key))
             {
-                return default(T);
+                return default!;
             }
 
             if (!await CheckExistedAsync(key, isFullKey).ConfigureAwait(false))
             {
-                return default(T);
+                return default!;
                 //InsertToCache(key, new ContainerItemCollection());
             }
 
@@ -213,7 +214,7 @@ namespace XY.CO2NET.Cache.Redis
                 return value.ToString().DeserializeFromCache<T>();
             }
 
-            return default(T);
+            return default!;
         }
 
         /// <summary>
@@ -225,10 +226,10 @@ namespace XY.CO2NET.Cache.Redis
             var keyPrefix = GetFinalKey("");//获取带XY:DefaultCache:前缀的Key（[DefaultCache]可配置）
             var dic = new Dictionary<string, object>();
 
-            var keys = GetServer().Keys(database: _cacheDatabase.Database, pattern: keyPrefix + "*", pageSize: 99999);
+            IEnumerable<RedisKey> keys = GetServer().Keys(database: _cacheDatabase.Database, pattern: keyPrefix + "*", pageSize: 99999);
             foreach (var redisKey in keys)
             {
-                dic[redisKey] = await GetAsync(redisKey, true).ConfigureAwait(false);
+                dic[redisKey!] = await GetAsync(redisKey!, true).ConfigureAwait(false);
             }
             return dic;
         }
@@ -276,14 +277,14 @@ namespace XY.CO2NET.Cache.Redis
         /// <summary>
         /// 根据 key 的前缀获取对象列表（最多 99999 条）
         /// </summary>
-        public IList<T> GetAllByPrefix<T>(string key)
+        public IList<T> GetAllByPrefix<T>()
         {
             var keyPattern = GetFinalKey("*");//获取带XY:DefaultCache:前缀的Key（[DefaultCache]
             var keys = GetServer().Keys(database: _cacheDatabase.Database, pattern: keyPattern, pageSize: 99999);
-            List<T> list = new List<T>();
+            List<T> list = new();
             foreach (var fullKey in keys)
             {
-                var obj = Get<T>(fullKey, true);
+                var obj = Get<T>(fullKey!, true);
                 if (obj != null)
                 {
                     list.Add(obj);
@@ -296,14 +297,14 @@ namespace XY.CO2NET.Cache.Redis
         /// <summary>
         /// 【异步方法】根据 key 的前缀获取对象列表（最多 99999 条）
         /// </summary>
-        public async Task<IList<T>> GetAllByPrefixAsync<T>(string key)
+        public async Task<IList<T>> GetAllByPrefixAsync<T>()
         {
-            var keyPattern = GetFinalKey("*");//获取带XY:DefaultCache:前缀的Key（[DefaultCache]         
+            var keyPattern = GetFinalKey("*");//获取带XY:DefaultCache:前缀的Key（[DefaultCache]
             var keys = GetServer().Keys(database: _cacheDatabase.Database, pattern: keyPattern, pageSize: 99999);
-            List<T> list = new List<T>();
+            List<T> list = new();
             foreach (var fullKey in keys)
             {
-                var obj = await GetAsync<T>(fullKey, true).ConfigureAwait(false);
+                var obj = await GetAsync<T>(fullKey!, true).ConfigureAwait(false);
                 if (obj != null)
                 {
                     list.Add(obj);

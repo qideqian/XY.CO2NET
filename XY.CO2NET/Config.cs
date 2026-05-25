@@ -66,7 +66,7 @@ namespace XY.CO2NET
             {
                 if (_rootDictionaryPath == null)
                 {
-#if NET48
+#if net48
                     var appPath = AppDomain.CurrentDomain.BaseDirectory;
                     if (System.Text.RegularExpressions.Regex.Match(appPath, $@"[\\/]$", System.Text.RegularExpressions.RegexOptions.Compiled).Success)
                     {

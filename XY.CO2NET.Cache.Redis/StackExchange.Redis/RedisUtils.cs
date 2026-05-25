@@ -20,8 +20,7 @@ namespace XY.CO2NET.Cache.Redis.StackExchange.Redis
             PropertyInfo[] properties = obj.GetType().GetProperties();
             return properties
                 .Where(x => x.GetIndexParameters().Length == 0 && x.GetValue(obj) != null) // <-- PREVENT NullReferenceException
-                .Select(property => new HashEntry(property.Name, property.GetValue(obj)
-                .ToString())).ToArray();
+                .Select(property => new HashEntry(property.Name, property.GetValue(obj)?.ToString())).ToArray();
         }
 
         /// <summary>
@@ -33,14 +32,14 @@ namespace XY.CO2NET.Cache.Redis.StackExchange.Redis
         public static T ConvertFromRedis<T>(this HashEntry[] hashEntries)
         {
             PropertyInfo[] properties = typeof(T).GetProperties();
-            var obj = Activator.CreateInstance(typeof(T));
+            T obj = Activator.CreateInstance<T>();
             foreach (var property in properties)
             {
                 HashEntry entry = hashEntries.FirstOrDefault(g => g.Name.ToString().Equals(property.Name));
                 if (entry.Equals(new HashEntry())) continue;
                 property.SetValue(obj, Convert.ChangeType(entry.Value.ToString(), property.PropertyType));
             }
-            return (T)obj;
+            return obj;
         }
     }
 }

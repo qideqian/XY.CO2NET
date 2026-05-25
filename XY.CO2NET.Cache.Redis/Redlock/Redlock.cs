@@ -16,7 +16,7 @@ namespace Redlock.CSharp
             DefaultRetryDelay = retryDelay;
             foreach (var item in list)
             {
-                this.redisMasterDictionary.Add(item.GetEndPoints().First().ToString(), item);
+                this.redisMasterDictionary.Add(item.GetEndPoints().First().ToString() ?? "", item);
             }
         }
 
@@ -27,7 +27,7 @@ namespace Redlock.CSharp
         }
 
         readonly int DefaultRetryCount = 3;
-        readonly TimeSpan DefaultRetryDelay = new TimeSpan(0, 0, 0, 0, 200);
+        readonly TimeSpan DefaultRetryDelay = new(0, 0, 0, 0, 200);
         const double ClockDriveFactor = 0.01;
 
         protected int Quorum { get { return (redisMasterDictionary.Count / 2) + 1; } }
@@ -49,11 +49,11 @@ namespace Redlock.CSharp
         }
 
 
-        protected Dictionary<String, ConnectionMultiplexer> redisMasterDictionary = new Dictionary<string, ConnectionMultiplexer>();
+        protected Dictionary<String, ConnectionMultiplexer> redisMasterDictionary = new();
 
         #region 同步方法
 
-        protected bool LockInstance(string redisServer, string resource, byte[] val, TimeSpan ttl)
+        protected bool LockInstance(string redisServer, string? resource, byte[] val, TimeSpan ttl)
         {
 
             bool succeeded;
@@ -69,7 +69,7 @@ namespace Redlock.CSharp
             return succeeded;
         }
 
-        protected void UnlockInstance(string redisServer, string resource, byte[] val)
+        protected void UnlockInstance(string redisServer, string? resource, byte[] val)
         {
             RedisKey[] key = { resource };
             RedisValue[] values = { val };
@@ -81,11 +81,11 @@ namespace Redlock.CSharp
                 );
         }
 
-        public bool Lock(RedisKey resource, TimeSpan ttl, out Lock lockObject)
+        public bool Lock(RedisKey resource, TimeSpan ttl, out Lock? lockObject)
         {
             var val = CreateUniqueLockId();
-            Lock innerLock = null;
-            bool successfull = retry(DefaultRetryCount, DefaultRetryDelay, () =>
+            Lock? innerLock = default;
+            bool successfull = Retry(DefaultRetryCount, DefaultRetryDelay, () =>
             {
                 try
                 {
@@ -93,7 +93,7 @@ namespace Redlock.CSharp
                     var startTime = DateTime.Now;
 
                     // Use keys
-                    for_each_redis_registered(
+                    For_each_redis_registered(
                         redis =>
                         {
                             if (LockInstance(redis, resource, val, ttl)) n += 1;
@@ -115,7 +115,7 @@ namespace Redlock.CSharp
                     }
                     else
                     {
-                        for_each_redis_registered(
+                        For_each_redis_registered(
                             redis =>
                             {
                                 UnlockInstance(redis, resource, val);
@@ -132,7 +132,7 @@ namespace Redlock.CSharp
             return successfull;
         }
 
-        protected void for_each_redis_registered(Action<ConnectionMultiplexer> action)
+        protected void ForEachRedisRegistered(Action<ConnectionMultiplexer> action)
         {
             foreach (var item in redisMasterDictionary)
             {
@@ -140,7 +140,7 @@ namespace Redlock.CSharp
             }
         }
 
-        protected void for_each_redis_registered(Action<String> action)
+        protected void For_each_redis_registered(Action<String> action)
         {
             foreach (var item in redisMasterDictionary)
             {
@@ -148,10 +148,10 @@ namespace Redlock.CSharp
             }
         }
 
-        protected bool retry(int retryCount, TimeSpan retryDelay, Func<bool> action)
+        protected static bool Retry(int retryCount, TimeSpan retryDelay, Func<bool> action)
         {
             int maxRetryDelay = (int)retryDelay.TotalMilliseconds;
-            Random rnd = new Random();
+            Random rnd = new();
             int currentRetry = 0;
 
             while (currentRetry++ < retryCount)
@@ -164,9 +164,9 @@ namespace Redlock.CSharp
 
         public void Unlock(Lock lockObject)
         {
-            for_each_redis_registered(redis =>
+            For_each_redis_registered(redis =>
             {
-                UnlockInstance(redis, lockObject.Resource, lockObject.Value);
+                UnlockInstance(redis, lockObject.Resource, lockObject.Value!);
             });
         }
 
@@ -174,7 +174,7 @@ namespace Redlock.CSharp
 
         #region 异步方法
 
-        protected async Task<bool> LockInstanceAsync(string redisServer, string resource, byte[] val, TimeSpan ttl)
+        protected async Task<bool> LockInstanceAsync(string redisServer, string? resource, byte[] val, TimeSpan ttl)
         {
 
             bool succeeded;
@@ -190,7 +190,7 @@ namespace Redlock.CSharp
             return succeeded;
         }
 
-        protected async Task UnlockInstanceAsync(string redisServer, string resource, byte[] val)
+        protected async Task UnlockInstanceAsync(string redisServer, string? resource, byte[] val)
         {
             RedisKey[] key = { resource };
             RedisValue[] values = { val };
@@ -208,11 +208,11 @@ namespace Redlock.CSharp
         /// <param name="resource"></param>
         /// <param name="ttl"></param>
         /// <returns>bool：successfull，Lock：lockObject</returns>
-        public async Task<Tuple<bool, Lock>> LockAsync(RedisKey resource, TimeSpan ttl)
+        public async Task<Tuple<bool, Lock?>> LockAsync(RedisKey resource, TimeSpan ttl)
         {
             var val = CreateUniqueLockId();
-            Lock innerLock = null;
-            bool successfull = await retryAsync(DefaultRetryCount, DefaultRetryDelay, async () =>
+            Lock? innerLock = default;
+            bool successfull = await RetryAsync(DefaultRetryCount, DefaultRetryDelay, async () =>
             {
                 await Task.CompletedTask;
                 try
@@ -221,7 +221,7 @@ namespace Redlock.CSharp
                     var startTime = DateTime.Now;
 
                     // Use keys
-                    for_each_redis_registered(
+                    For_each_redis_registered(
                           async redis =>
                           {
                               if (await LockInstanceAsync(redis, resource, val, ttl).ConfigureAwait(false)) n += 1;
@@ -243,7 +243,7 @@ namespace Redlock.CSharp
                     }
                     else
                     {
-                        for_each_redis_registered(
+                        For_each_redis_registered(
                              async redis =>
                              {
                                  await UnlockInstanceAsync(redis, resource, val).ConfigureAwait(false);
@@ -259,21 +259,21 @@ namespace Redlock.CSharp
             return Tuple.Create(successfull, innerLock);
         }
 
-        protected async Task for_each_redis_registeredAsync(Action<ConnectionMultiplexer> action)
+        protected async Task For_each_redis_registeredAsync(Action<ConnectionMultiplexer> action)
         {
-            await Task.Factory.StartNew(() => for_each_redis_registered(action)).ConfigureAwait(false);
+            await Task.Factory.StartNew(() => ForEachRedisRegistered(action)).ConfigureAwait(false);
         }
 
-        protected async Task for_each_redis_registeredAsync(Action<String> action)
+        protected async Task For_each_redis_registeredAsync(Action<String> action)
         {
-            await Task.Factory.StartNew(() => for_each_redis_registered(action)).ConfigureAwait(false);
+            await Task.Factory.StartNew(() => For_each_redis_registered(action)).ConfigureAwait(false);
 
         }
 
-        protected async Task<bool> retryAsync(int retryCount, TimeSpan retryDelay, Func<Task<bool>> action)
+        protected static async Task<bool> RetryAsync(int retryCount, TimeSpan retryDelay, Func<Task<bool>> action)
         {
             int maxRetryDelay = (int)retryDelay.TotalMilliseconds;
-            Random rnd = new Random();
+            Random rnd = new();
             int currentRetry = 0;
 
             while (currentRetry++ < retryCount)
@@ -286,9 +286,9 @@ namespace Redlock.CSharp
 
         public async Task UnlockAsync(Lock lockObject)
         {
-            await for_each_redis_registeredAsync(async redis =>
+            await For_each_redis_registeredAsync(async redis =>
             {
-                await UnlockInstanceAsync(redis, lockObject.Resource, lockObject.Value).ConfigureAwait(false);
+                await UnlockInstanceAsync(redis, lockObject.Resource, lockObject.Value!).ConfigureAwait(false);
             }).ConfigureAwait(false);
         }
 
@@ -296,7 +296,7 @@ namespace Redlock.CSharp
 
         public override string ToString()
         {
-            StringBuilder sb = new StringBuilder();
+            StringBuilder sb = new();
             sb.AppendLine(this.GetType().FullName);
 
             sb.AppendLine("Registered Connections:");

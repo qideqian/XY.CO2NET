@@ -15,7 +15,7 @@ namespace System
         /// <returns></returns>
         public static string HtmlEncode(this string html)
         {
-#if NET48
+#if net48
             return System.Web.HttpUtility.HtmlEncode(html);
 #else
             return WebUtility.HtmlEncode(html);
@@ -28,14 +28,14 @@ namespace System
         /// <returns></returns>
         public static string HtmlDecode(this string html)
         {
-#if NET48
+#if net48
             return System.Web.HttpUtility.HtmlDecode(html);
 #else
             return WebUtility.HtmlDecode(html);
 #endif
         }
 
-#if NET48
+#if net48
         /// <summary>
         /// 封装 System.Web.HttpUtility.UrlEncode
         /// <para>注意：.NET Core 转义后字母为大写</para>
@@ -61,7 +61,7 @@ namespace System
         }
 #endif
 
-#if NET48
+#if net48
         /// <summary>
         /// 封装System.Web.HttpUtility.UrlDecode
         /// </summary>

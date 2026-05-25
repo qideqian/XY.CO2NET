@@ -1,10 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>NET48;netstandard2.0;net6.0;net10.0</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;net6.0;net10.0</TargetFrameworks>
     <LangVersion>10.0</LangVersion>
     <Nullable>enable</Nullable>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+    <RestoreSources>https://api.nuget.org/v3/index.json</RestoreSources>
+    <RestoreIgnoreFailedSources>true</RestoreIgnoreFailedSources>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Authors>QiDeQian</Authors>
     <Company>山东新意软件科技有限公司</Company>
@@ -46,7 +48,7 @@
     <PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="All" />
   </ItemGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'NET48' Or '$(TargetFramework)' == 'netstandard2.0' ">
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net48' Or '$(TargetFramework)' == 'netstandard2.0' ">
     <PackageReference Include="System.Text.Json" />
   </ItemGroup>
 

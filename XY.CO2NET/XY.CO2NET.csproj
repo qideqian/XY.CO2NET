@@ -27,7 +27,7 @@
       [修复] Fixed
       - 修正发布说明与版本信息一致性，优化多目标框架展示。
     </PackageReleaseNotes>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Version>2.0.8</Version>
   </PropertyGroup>
 

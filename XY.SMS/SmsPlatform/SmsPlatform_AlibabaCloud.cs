@@ -113,7 +113,7 @@ namespace XY.SMS.SmsPlatform
             {
                 logAction((logExtra) =>
                 {
-                    var logContent = $"模板Code:{TemplateCode} 参数:{TemplateParam} 签名:{SignName} 手机号:{PhoneNumbers} 额外:{logExtra}";
+                    var logContent = $"模板Code:{TemplateCode} 参数:{TemplateParam} 签名:{SignName} 手机号:{PhoneNumbers} 额外:{logExtra} 结果:{resultTask.Result.ToJson()}";
                     WriteSmsLog(logContent);
                 });
             }
@@ -128,7 +128,7 @@ namespace XY.SMS.SmsPlatform
             var resultTask = Send(TemplateCode, TemplateParam, SignName, PhoneNumbers, SaveToDatabaseCallback);
             if (writeLog)
             {
-                var logContent = $"模板Code:{TemplateCode} 参数:{TemplateParam} 签名:{SignName} 手机号:{PhoneNumbers} 额外:{logExtra}";
+                var logContent = $"模板Code:{TemplateCode} 参数:{TemplateParam} 签名:{SignName} 手机号:{PhoneNumbers} 额外:{logExtra} 结果:{resultTask.Result.ToJson()}";
                 WriteSmsLog(logContent);
             }
             return resultTask;

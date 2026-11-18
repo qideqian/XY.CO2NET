@@ -1,0 +1,13 @@
+{
+  "versionPrefix": "2.0",
+  "minimumVersion": "2.0.10",
+  "projects": [
+    "XY.CO2NET/XY.CO2NET.csproj",
+    "XY.CO2NET.Cache.Redis/XY.CO2NET.Cache.Redis.csproj",
+    "XY.SMS/XY.SMS.csproj",
+    "XY.OCR.AlibabaCloud/XY.OCR.AlibabaCloud.csproj",
+    "XY.OCR.UmiOCR/XY.OCR.UmiOCR.csproj",
+    "XY.AI.SemanticKernel/XY.AI.SemanticKernel.csproj",
+    "XY.AspNetCore.Mvc.Validation/XY.AspNetCore.Mvc.Validation.csproj"
+  ]
+}

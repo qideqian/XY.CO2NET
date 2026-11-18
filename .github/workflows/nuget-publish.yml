@@ -2,76 +2,119 @@ name: Publish NuGet packages
 
 on:
   push:
-    tags:
-      - 'v*'
+    branches:
+      - master
   workflow_dispatch: {}
+
+# 所有发布共用一把锁，排队执行，避免并行计算得到相同补丁版本。
+concurrency:
+  group: nuget-release-master
+  cancel-in-progress: false
+  queue: max
+
+permissions:
+  contents: read
 
 jobs:
   publish:
-    name: Pack and publish NuGet packages
+    name: Validate, tag and publish NuGet packages
+    if: github.ref == 'refs/heads/master'
     runs-on: windows-latest
+    timeout-minutes: 30
+    permissions:
+      # 使用 GITHUB_TOKEN 创建版本标签，无需额外配置 GitHub PAT。
+      contents: write
+    defaults:
+      run:
+        shell: pwsh
     env:
       NUGET_SOURCE: https://api.nuget.org/v3/index.json
+      DOTNET_NOLOGO: 'true'
+      DOTNET_CLI_TELEMETRY_OPTOUT: 'true'
 
     steps:
-      - name: Checkout
+      - name: 检出本次推送的提交与全部标签
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      - name: Setup .NET
+      - name: 检查发布凭据
+        env:
+          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+        run: |
+          if ([string]::IsNullOrWhiteSpace($env:NUGET_API_KEY)) {
+            throw '请在仓库 Settings → Secrets and variables → Actions 中配置 NUGET_API_KEY。'
+          }
+
+      - name: 根据 global.json 安装 .NET SDK
         uses: actions/setup-dotnet@v4
         with:
-          # adjust SDK version if you need a different one (e.g. 10.0.x when available)
-          dotnet-version: '8.0.x'
+          global-json-file: global.json
 
-      - name: Restore
-        run: dotnet restore
-
-      - name: Build
-        run: dotnet build --configuration Release --no-restore
-
-      - name: Pack projects
-        shell: pwsh
-        env:
-          VERSION: ${{ github.ref_name }}
+      - name: 验证自动版本和标签规则
         run: |
-          $ErrorActionPreference = 'Stop'
-          $version = $env:VERSION -replace '^v',''
-          if (-not $version) { Write-Host "No tag version found; using 1.0.0"; $version = '1.0.0' }
-          New-Item -ItemType Directory -Path nupkgs -Force | Out-Null
-          Get-ChildItem -Path . -Filter *.csproj -Recurse | ForEach-Object {
-            Write-Host "Packing $($_.FullName) with version $version"
-            try {
-              dotnet pack $_.FullName -c Release -o nupkgs /p:PackageVersion=$version --no-build
-            } catch {
-              Write-Warning "dotnet pack failed for $($_.FullName) - skipped: $_"
-            }
-          }
+          ./.github/scripts/Test-NuGetReleaseVersion.ps1
+          ./.github/scripts/Test-NuGetReleaseTag.ps1
 
-      - name: Verify NUGET_API_KEY available
-        shell: pwsh
-        env:
-          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+      - name: 计算或复用本次发布版本
+        id: release
         run: |
-          if (-not $env:NUGET_API_KEY) {
-            Write-Host 'NUGET_API_KEY secret NOT found in this run.'
-            Write-Host 'Ensure you added repository secret named exactly "NUGET_API_KEY" (Settings → Secrets and variables → Actions).' 
-            exit 1
-          }
-          else {
-            Write-Host 'NUGET_API_KEY secret is present in this run (value hidden).'
-          }
+          # 排队等待期间可能已有新标签；获取后再计算，始终保留当前检出的提交。
+          git fetch origin --tags --force
+          if ($LASTEXITCODE -ne 0) { throw '获取远程标签失败。' }
+          $release = ./.github/scripts/Get-NuGetReleaseVersion.ps1 -Commit $env:GITHUB_SHA
+          "version=$($release.Version)" >> $env:GITHUB_OUTPUT
+          "tag=$($release.Tag)" >> $env:GITHUB_OUTPUT
+          "commit=$($release.Commit)" >> $env:GITHUB_OUTPUT
+          "reused=$($release.ReusedTag)" >> $env:GITHUB_OUTPUT
 
-      - name: Push packages to NuGet
-        shell: pwsh
+      - name: 还原、构建、测试与检查 NuGet 包
+        env:
+          RELEASE_VERSION: ${{ steps.release.outputs.version }}
+        run: ./.github/scripts/Invoke-NuGetReleaseBuild.ps1 -Version $env:RELEASE_VERSION
+
+      - name: 保存已验证的发布包
+        uses: actions/upload-artifact@v4
+        with:
+          name: nuget-${{ steps.release.outputs.version }}
+          path: artifacts/nuget/*
+          if-no-files-found: error
+          retention-days: 30
+          overwrite: true
+
+      - name: 创建并推送版本标签
+        env:
+          RELEASE_TAG: ${{ steps.release.outputs.tag }}
+          RELEASE_COMMIT: ${{ steps.release.outputs.commit }}
+        run: ./.github/scripts/Publish-NuGetReleaseTag.ps1 -Tag $env:RELEASE_TAG -Commit $env:RELEASE_COMMIT
+
+      - name: 发布 NuGet 包与符号包
         env:
           NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+          RELEASE_VERSION: ${{ steps.release.outputs.version }}
         run: |
           $ErrorActionPreference = 'Stop'
-          Get-ChildItem -Path nupkgs -Filter *.nupkg -File -Recurse | ForEach-Object {
-            Write-Host "Pushing $($_.FullName)"
-            dotnet nuget push $_.FullName -k $env:NUGET_API_KEY -s $env:NUGET_SOURCE --skip-duplicate
+          $config = Get-Content '.github/nuget-release.json' -Raw -Encoding utf8 | ConvertFrom-Json
+          # 先上传核心包，再上传依赖它的包；每次失败立即停止，重跑时跳过已存在版本。
+          foreach ($project in $config.projects) {
+            $id = [IO.Path]::GetFileNameWithoutExtension($project)
+            $package = "artifacts/nuget/$id.$env:RELEASE_VERSION.nupkg"
+            dotnet nuget push $package --api-key $env:NUGET_API_KEY --source $env:NUGET_SOURCE --skip-duplicate --no-symbols
+            if ($LASTEXITCODE -ne 0) { throw "发布 $id 失败。" }
           }
-          Get-ChildItem -Path nupkgs -Filter *.snupkg -File -Recurse | ForEach-Object {
-            Write-Host "Pushing symbols $($_.FullName)"
-            dotnet nuget push $_.FullName -k $env:NUGET_API_KEY -s $env:NUGET_SOURCE --skip-duplicate
+          # 显式上传符号包，保证主包成功、符号包失败后也能单独补发。
+          foreach ($symbols in Get-ChildItem 'artifacts/nuget' -Filter '*.snupkg' -File) {
+            dotnet nuget push $symbols.FullName --api-key $env:NUGET_API_KEY --source $env:NUGET_SOURCE --skip-duplicate
+            if ($LASTEXITCODE -ne 0) { throw "发布符号包 $($symbols.Name) 失败。" }
           }
+
+      - name: 输出发布结果
+        env:
+          RELEASE_VERSION: ${{ steps.release.outputs.version }}
+          RELEASE_TAG: ${{ steps.release.outputs.tag }}
+        run: |
+          "### NuGet 发布完成" >> $env:GITHUB_STEP_SUMMARY
+          "- 版本：$env:RELEASE_VERSION" >> $env:GITHUB_STEP_SUMMARY
+          "- 标签：$env:RELEASE_TAG" >> $env:GITHUB_STEP_SUMMARY
+          "- 提交：$env:GITHUB_SHA" >> $env:GITHUB_STEP_SUMMARY
+          "- 所有发布包及符号包已上传；完整包可在本次运行的 Artifacts 下载。" >> $env:GITHUB_STEP_SUMMARY

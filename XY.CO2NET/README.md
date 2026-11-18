@@ -73,22 +73,11 @@ NET Core模式下通过`RegisterService.Start(XYSetting xySetting)`注册
 + .NetCore下缓存应用，分布式缓存应用
 
 
-推送标签并出发Nuget发布
-```
-cd 'D:\Project\GitHub\XY.CO2NET' 
-git tag -a v2.0.9 -m "Release v2.0.9" 
-git push origin refs/tags/v2.0.9
-```
+## NuGet 自动发布
 
-删除本地标签
-```
-git tag -d v2.0.0
-```
+提交推送到 GitHub 的 `master` 后，工作流自动递增 `2.0.x` 补丁版本，在构建和测试通过后创建对应标签并发布全部 NuGet 包。无需手动创建或删除版本标签。
 
-删除远程标签
-```
-git push origin --delete v2.0.0
-```
+发布配置、密钥设置、本地验证和失败重试说明见[仓库发布文档](https://github.com/qideqian/XY.CO2NET#master-自动发布-nuget)。
 
 ## 安全扫描（gitleaks）
 

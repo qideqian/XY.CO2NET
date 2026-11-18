@@ -9,13 +9,13 @@ namespace System.Threading.Tasks
     public static class TaskExtensions
     {
         /// <summary>
-        /// 如果失败，重试指定次数
+        /// 在总尝试次数上限内执行，首次成功即返回；函数抛出的异常（包括取消异常）也会触发下一次尝试。
         /// string pageContents = await RetryOnFault(() => DownloadStringTaskAsync(url), 3);
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="function">执行的方法</param>
-        /// <param name="maxTries">重试次数</param>
-        /// <returns></returns>
+        /// <param name="maxTries">总尝试次数上限，包含首次执行；小于或等于 0 时不执行函数并返回 default(T)。</param>
+        /// <returns>首次成功的结果；尝试耗尽时传播最后一次异常；未尝试时为 default(T)。</returns>
         public static T RetryOnFault<T>(Func<T> function, int maxTries)
         {
             for (int i = 0; i < maxTries; i++)
@@ -27,13 +27,13 @@ namespace System.Threading.Tasks
         }
 
         /// <summary>
-        /// 如果失败，重试指定次数，返回任务
+        /// 在总尝试次数上限内等待函数返回的任务，首次成功即返回；函数或任务的异常（包括取消异常）也会触发下一次尝试。
         /// string pageContents = await RetryOnFault(() => DownloadStringTaskAsync(url), 3);
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="function">执行的方法</param>
-        /// <param name="maxTries">重试次数</param>
-        /// <returns></returns>
+        /// <param name="maxTries">总尝试次数上限，包含首次执行；小于或等于 0 时不执行函数并返回 default(T)。</param>
+        /// <returns>首次成功的结果；尝试耗尽时传播最后一次异常；未尝试时为 default(T)。</returns>
         public static async Task<T> RetryOnFault<T>(Func<Task<T>> function, int maxTries)
         {
             for (int i = 0; i < maxTries; i++)
@@ -45,14 +45,14 @@ namespace System.Threading.Tasks
         }
 
         /// <summary>
-        /// 如果失败，重试指定次数，返回任务
+        /// 在总尝试次数上限内等待函数返回的任务，首次成功即返回；函数或任务的异常（包括取消异常）也会触发下一次尝试。
         /// string pageContents = await RetryOnFault(() => DownloadStringTaskAsync(url), 3, () => Task.Delay(1000));
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="function">执行的方法</param>
-        /// <param name="maxTries">重试次数</param>
-        /// <param name="retryWhen">在重试间隔期间调用以确定何时重试该操作</param>
-        /// <returns></returns>
+        /// <param name="maxTries">总尝试次数上限，包含首次执行；小于或等于 0 时不执行函数并返回 default(T)。</param>
+        /// <param name="retryWhen">仅在非最后一次尝试失败后调用并等待；其异常直接传播，不再继续尝试。</param>
+        /// <returns>首次成功的结果；尝试耗尽时传播最后一次异常；未尝试时为 default(T)。</returns>
         public static async Task<T> RetryOnFault<T>(Func<Task<T>> function, int maxTries, Func<Task> retryWhen)
         {
             for (int i = 0; i < maxTries; i++)
@@ -65,7 +65,9 @@ namespace System.Threading.Tasks
         }
 
         /// <summary>
-        /// 利用冗余改进操作延迟和提高成功的可能性，多个任务只要有一个成功即返回
+        /// 调用各任务工厂并等待任一任务完成（成功、失败或取消），随后请求共享令牌取消，再等待该已完成任务。
+        /// 不等待其余任务结束；返回的是 WhenAny 选中的已完成任务的结果或异常，并非首个成功结果。
+        /// 工厂同步抛出的异常及取消回调抛出的异常也会通过本方法返回的任务传播。
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="functions"></param>
@@ -90,7 +92,7 @@ namespace System.Threading.Tasks
         /// 每次调用 WhenAny 都会向每个任务注册延续。 对于 N 个任务，这将导致在交错操作的操作期间创建 O(N2) 次延续。
         /// 如果处理大型任务集，则可以使用连结符（以下示例中的 Interleaved）来解决性能问题
         /// 
-        /// IEnumerable<Task<int>> tasks = ...;
+        /// IEnumerable&lt;Task&lt;int&gt;&gt; tasks = ...;
         /// foreach(var task in Interleaved(tasks))
         /// {
         ///     int result = await task;

@@ -11,7 +11,7 @@ namespace XY.CO2NET.Utilities
     {
         #region 同步方法
         /// <summary>
-        /// 获取Stream的Base64字符串
+        /// 从流起始位置读取至结束并返回 Base64 字符串；不关闭输入流。
         /// </summary>
         /// <param name="stream"></param>
         /// <returns></returns>
@@ -29,10 +29,10 @@ namespace XY.CO2NET.Utilities
         }
 
         /// <summary>
-        /// 将base64String反序列化到流，或保存成文件
+        /// 将 Base64 解码到内存流，可选保存到文件；返回流的位置为 0，由调用方释放。
         /// </summary>
         /// <param name="base64String"></param>
-        /// <param name="savePath">如果为null则不保存</param>
+        /// <param name="savePath">为 null 或空字符串时不保存；否则从文件起始位置写入，不截断已有文件。</param>
         /// <returns></returns>
         public static Stream GetStreamFromBase64String(string base64String, string savePath)
         {
@@ -51,7 +51,7 @@ namespace XY.CO2NET.Utilities
         }
 
         /// <summary>
-        /// 将memoryStream保存到文件
+        /// 从文件起始位置写入 memoryStream 的全部内容；创建不存在的文件，但不截断已有文件，较长旧文件的尾部会保留。
         /// </summary>
         /// <param name="memoryStream"></param>
         /// <param name="savePath"></param>
@@ -67,7 +67,7 @@ namespace XY.CO2NET.Utilities
 
         #region 异步方法
         /// <summary>
-        /// 【异步方法】获取Stream的Base64字符串
+        /// 【异步方法】从流起始位置读取至结束并返回 Base64 字符串；不关闭输入流。
         /// </summary>
         /// <param name="stream"></param>
         /// <returns></returns>
@@ -85,10 +85,10 @@ namespace XY.CO2NET.Utilities
         }
 
         /// <summary>
-        /// 【异步方法】将base64String反序列化到流，或保存成文件
+        /// 【异步方法】将 Base64 解码到内存流，可选保存到文件；返回流的位置为 0，由调用方释放。
         /// </summary>
         /// <param name="base64String"></param>
-        /// <param name="savePath">如果为null则不保存</param>
+        /// <param name="savePath">为 null 或空字符串时不保存；否则从文件起始位置写入，不截断已有文件。</param>
         /// <returns></returns>
         public static async Task<Stream> GetStreamFromBase64StringAsync(string base64String, string savePath)
         {
@@ -107,7 +107,7 @@ namespace XY.CO2NET.Utilities
         }
 
         /// <summary>
-        /// 【异步方法】将memoryStream保存到文件
+        /// 【异步方法】从文件起始位置写入 memoryStream 的全部内容；创建不存在的文件，但不截断已有文件，较长旧文件的尾部会保留。
         /// </summary>
         /// <param name="memoryStream"></param>
         /// <param name="savePath"></param>

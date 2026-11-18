@@ -32,7 +32,7 @@ namespace XY.CO2NET.Cache
         /// <param name="strategy"></param>
         /// <param name="resourceName"></param>
         /// <param name="key"></param>
-        /// <param name="retryCount">如果传入null，默认为50</param>
+        /// <param name="retryCount">传入 <see langword="null"/> 或 0 时使用 <see cref="DefaultRetryCount"/>（当前为 20）。</param>
         /// <param name="retryDelay">如果传入null，默认为10毫秒</param>
         protected BaseCacheLock(IBaseCacheStrategy strategy, string resourceName, string key, int? retryCount, TimeSpan? retryDelay)
         {

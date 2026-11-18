@@ -6,16 +6,16 @@ using System.Linq.Expressions;
 namespace XY.CO2NET.Helpers
 {
     /// <summary>
-    /// 支持关联表的正则表达式查询条件拼装
+    /// 使用 LINQ 表达式树组合查询谓词；本类不执行查询，也不保证特定查询提供程序可翻译这些表达式。
     /// 
     /// 类型如：
-    ///   var seh = new XYExpressionHelper<T>();
+    ///   var seh = new XYExpressionHelper&lt;TEntity&gt;();
     ///   seh.ValueCompare
-    ///       .AndAlso(true, i => !i.IsDeleted && i.MPAccountId == MPAccount.Id)
+    ///       .AndAlso(true, i => !i.IsDeleted &amp;&amp; i.MPAccountId == MPAccount.Id)
     ///       .AndAlso(!string.IsNullOrEmpty(SearchText), i => i.RuleName.Contains(SearchText) || i.MPKeywordList.Count(c => c.Content.Contains(SearchText)) > 0);
     ///   var where = seh.BuildWhereExpression();
     ///   
-    /// 其中关联表的Count统计，在XYExpressionHelper下，会吧变量c当作主表属性而报错
+    /// 合并时按参数对象映射替换第二个顶层 lambda 的参数；未出现在映射中的嵌套 lambda 参数（如示例中的 c）保持不变。
     /// </summary>
     /// <typeparam name="TEntity"></typeparam>
     public class XYExpressionHelper<TEntity> where TEntity : class
@@ -27,14 +27,14 @@ namespace XY.CO2NET.Helpers
         }
 
         /// <summary>
-        /// 生成where表达式
+        /// 返回当前组合的谓词；尚无条件时返回恒为 true 的表达式。
         /// </summary>
         /// <returns></returns>
         public Expression<Func<TEntity, bool>> BuildWhereExpression()
         {
             if (ValueCompare.ExpressionBody == null)
             {
-                //不需要查询
+                //没有附加筛选条件时返回恒真谓词；是否执行查询由调用方决定。
                 Expression<Func<TEntity, bool>> returnTrue = z => true;
                 return returnTrue;
             }

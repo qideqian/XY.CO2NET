@@ -9,20 +9,20 @@ using System.Reflection;
 namespace XY.CO2NET.Helpers
 {
     /// <summary>
-    /// JSON输出设置
+    /// JSON 自定义输出选项；由 JsonSettingWrap 创建 JsonContractResolver 后应用这些选项。
     /// </summary>
     public class JsonSetting : JsonSerializerSettings
     {
         /// <summary>
-        /// 是否忽略当前类型以及具有IJsonIgnoreNull接口，且为Null值的属性。如果为true，符合此条件的属性将不会出现在Json字符串中
+        /// 全局空值忽略开关；为 false 时，成员上的 IgnoreNullAttribute 以及名称或类型规则仍可要求忽略空值。
         /// </summary>
         public bool IgnoreNulls { get; set; }
         /// <summary>
-        /// 需要特殊忽略null值的属性名称
+        /// 按反射成员名称匹配的空值忽略名单（不是重命名后的 JSON 名称）
         /// </summary>
         public List<string> PropertiesToIgnoreNull { get; set; }
         /// <summary>
-        /// 指定类型（Class，非Interface）下的为null属性不生成到Json中
+        /// 未定义 net48 编译符号时，按 JSON 属性的 PropertyType 精确匹配空值忽略规则；不是按所属对象类型匹配。net48 的 CreateProperty 分支不使用此类型规则。
         /// </summary>
         public List<Type> TypesToIgnoreNull { get; set; }
 
@@ -39,7 +39,7 @@ namespace XY.CO2NET.Helpers
 
         }
         /// <summary>
-        /// 例外属性，即不排除的属性值
+        /// 例外标记类型；本文件的 JsonContractResolver 未读取此标记，不据此取消其他忽略规则。
         /// </summary>
         public class ExcludedAttribute : Attribute
         {
@@ -58,9 +58,9 @@ namespace XY.CO2NET.Helpers
         /// <summary>
         /// JSON 输出设置 构造函数
         /// </summary>
-        /// <param name="ignoreNulls">是否忽略当前类型以及具有IJsonIgnoreNull接口，且为Null值的属性。如果为true，符合此条件的属性将不会出现在Json字符串中</param>
-        /// <param name="propertiesToIgnoreNull">需要特殊忽略null值的属性名称</param>
-        /// <param name="typesToIgnoreNull">指定类型（Class，非Interface）下的为null属性不生成到Json中</param>
+        /// <param name="ignoreNulls">全局空值忽略开关；为 false 时，成员上的 IgnoreNullAttribute 以及名称或类型规则仍可要求忽略空值。</param>
+        /// <param name="propertiesToIgnoreNull">按反射成员名称匹配的空值忽略名单（不是重命名后的 JSON 名称）</param>
+        /// <param name="typesToIgnoreNull">未定义 net48 编译符号时，按 JSON 属性的 PropertyType 精确匹配空值忽略规则；不是按所属对象类型匹配。net48 的 CreateProperty 分支不使用此类型规则。</param>
         public JsonSetting(bool ignoreNulls = false, List<string> propertiesToIgnoreNull = null, List<Type> typesToIgnoreNull = null)
         {
             IgnoreNulls = ignoreNulls;
@@ -76,6 +76,8 @@ namespace XY.CO2NET.Helpers
 
         }
 
+        /// <summary>仅从自定义选项创建解析器，不复制 JsonSetting 继承的其他 JsonSerializerSettings 设置。</summary>
+        /// <param name="jsonSetting">为 null 时不设置 ContractResolver；非 null 时读取其三个自定义选项。</param>
         public JsonSettingWrap(JsonSetting jsonSetting)
         {
             if (jsonSetting != null)
@@ -86,11 +88,12 @@ namespace XY.CO2NET.Helpers
         }
 
         /// <summary>
-        /// JSON 输出设置 构造函数  优先级： ignoreNulls &lt; propertiesToIgnoreNull &lt; typesToIgnoreNull
+        /// 创建应用空值、成员名称和成员类型规则的解析器；这些规则可共同要求忽略空值。
         /// </summary>
-        /// <param name="ignoreNulls">是否忽略具有IJsonIgnoreNull接口，且为Null值的属性。如果为true，符合此条件的属性将不会出现在Json字符串中</param>
-        /// <param name="propertiesToIgnoreNull">需要特殊忽略null值的属性名称</param>
-        /// <param name="typesToIgnoreNull">指定类型（Class，非Interface）下的为null属性不生成到Json中</param>
+        /// <param name="ignoreNulls">全局空值忽略开关；为 false 时，成员上的 IgnoreNullAttribute 以及名称或类型规则仍可要求忽略空值。</param>
+        /// <param name="propertiesToIgnoreNull">按反射成员名称匹配的空值忽略名单（不是重命名后的 JSON 名称）</param>
+        /// <param name="typesToIgnoreNull">未定义 net48 编译符号时，按 JSON 属性的 PropertyType 精确匹配空值忽略规则；不是按所属对象类型匹配。net48 的 CreateProperty 分支不使用此类型规则。</param>
+        /// <remarks>直接调用此构造函数时，两个名单应传入非 null 集合；本构造函数不补建集合，后续解析会调用它们的 Contains。</remarks>
         public JsonSettingWrap(bool ignoreNulls = false, List<string> propertiesToIgnoreNull = null, List<Type> typesToIgnoreNull = null)
         {
             ContractResolver = new JsonContractResolver(ignoreNulls, propertiesToIgnoreNull, typesToIgnoreNull);
@@ -100,23 +103,24 @@ namespace XY.CO2NET.Helpers
     public class JsonContractResolver : DefaultContractResolver
     {
         /// <summary>
-        /// 是否忽略当前类型以及具有IJsonIgnoreNull接口，且为Null值的属性。如果为true，符合此条件的属性将不会出现在Json字符串中
+        /// 全局空值忽略开关；为 false 时，成员上的 IgnoreNullAttribute 以及名称或类型规则仍可要求忽略空值。
         /// </summary>
         bool IgnoreNulls;
         /// <summary>
-        /// 需要特殊忽略null值的属性名称
+        /// 按反射成员名称匹配的空值忽略名单（不是重命名后的 JSON 名称）
         /// </summary>
         public List<string> PropertiesToIgnoreNull { get; set; }
         /// <summary>
-        /// 指定类型（Class，非Interface）下的为null属性不生成到Json中
+        /// 未定义 net48 编译符号时，按 JSON 属性的 PropertyType 精确匹配空值忽略规则；不是按所属对象类型匹配。net48 的 CreateProperty 分支不使用此类型规则。
         /// </summary>
         public List<Type> TypesToIgnoreNull { get; set; }
         /// <summary>
-        /// JSON 输出设置 构造函数  优先级： ignoreNulls &lt; propertiesToIgnoreNull &lt; typesToIgnoreNull
+        /// 创建应用空值、成员名称和成员类型规则的解析器；这些规则可共同要求忽略空值。
         /// </summary>
-        /// <param name="ignoreNulls">是否忽略当前类型以及具有IJsonIgnoreNull接口，且为Null值的属性。如果为true，符合此条件的属性将不会出现在Json字符串中</param>
-        /// <param name="propertiesToIgnoreNull">需要特殊忽略null值的属性名称</param>
-        /// <param name="typesToIgnoreNull">指定类型（Class，非Interface）下的为null属性不生成到Json中</param>
+        /// <param name="ignoreNulls">全局空值忽略开关；为 false 时，成员上的 IgnoreNullAttribute 以及名称或类型规则仍可要求忽略空值。</param>
+        /// <param name="propertiesToIgnoreNull">按反射成员名称匹配的空值忽略名单（不是重命名后的 JSON 名称）</param>
+        /// <param name="typesToIgnoreNull">未定义 net48 编译符号时，按 JSON 属性的 PropertyType 精确匹配空值忽略规则；不是按所属对象类型匹配。net48 的 CreateProperty 分支不使用此类型规则。</param>
+        /// <remarks>直接调用此构造函数时，两个名单应传入非 null 集合；本构造函数不补建集合，后续解析会调用它们的 Contains。</remarks>
         public JsonContractResolver(bool ignoreNulls = false, List<string> propertiesToIgnoreNull = null, List<Type> typesToIgnoreNull = null)
         {
             IgnoreNulls = ignoreNulls;
@@ -126,7 +130,7 @@ namespace XY.CO2NET.Helpers
 
         protected override IList<JsonProperty> CreateProperties(Type type, MemberSerialization memberSerialization)
         {
-            //TypesToIgnoreNull指定类型（Class，非Interface）下的为null属性不生成到Json中
+            //此处查询所属类型的标记，但未使用查询结果改变属性集合。
             if (TypesToIgnoreNull.Contains(type))
             {
                 type.IsDefined(typeof(JsonSetting.IgnoreNullAttribute), false);
@@ -139,7 +143,7 @@ namespace XY.CO2NET.Helpers
             var property = base.CreateProperty(member, memberSerialization);
 
 #if net48
-            //IgnoreNull标注的字段根据IgnoreNulls设定是否序列化
+            //全局开关或成员上的 IgnoreNullAttribute 均可启用空值忽略。
             var ignoreNull = member.GetCustomAttribute<JsonSetting.IgnoreNullAttribute>();
             if (ignoreNull != null || IgnoreNulls)
             {
@@ -165,7 +169,7 @@ namespace XY.CO2NET.Helpers
 #else
             var customAttributes = member.GetCustomAttributes(false);
             var ignoreNullAttribute = typeof(JsonSetting.IgnoreNullAttribute);
-            //IgnoreNull标注的字段根据IgnoreNulls设定是否序列化
+            //全局开关或成员上的 IgnoreNullAttribute 均可启用空值忽略。
             if (IgnoreNulls || customAttributes.Count(o => o.GetType() == ignoreNullAttribute) == 1)
             {
                 property.NullValueHandling = NullValueHandling.Ignore;
@@ -181,11 +185,11 @@ namespace XY.CO2NET.Helpers
                 property.NullValueHandling = NullValueHandling.Ignore;
             }
 
-            //TypesToIgnoreNull特定类型字段为Null时不序列化
+            //此分支按 JSON 属性的值类型匹配，并设置非 null 值才序列化的判断。
             if (TypesToIgnoreNull.Contains(property.PropertyType))
             {
                 //Console.WriteLine("忽略null值：" + property.PropertyType);
-                property.NullValueHandling = NullValueHandling.Ignore;//这样设置无效
+                property.NullValueHandling = NullValueHandling.Ignore;//设置空值忽略，并在下方补充 ShouldSerialize。
                 var t = member.DeclaringType;
                 property.ShouldSerialize = instance =>
                 {
@@ -202,7 +206,7 @@ namespace XY.CO2NET.Helpers
                 };
             }
 
-            //符合IgnoreValue标注值的字段不序列化
+            //IgnoreValue 在此分支设置 ShouldSerialize，会覆盖前面的类型规则所设置的判断。
             var ignoreValueAttribute = typeof(JsonSetting.IgnoreValueAttribute);
             var ignoreValue = customAttributes.FirstOrDefault(o => o.GetType() == ignoreValueAttribute);
             if (ignoreValue != null)

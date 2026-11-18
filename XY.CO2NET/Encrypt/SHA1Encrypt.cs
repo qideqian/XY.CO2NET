@@ -6,10 +6,10 @@ namespace XY.Encrypt
     public class SHA1Encrypt
     {
         /// <summary>
-        /// SHA1 加密，返回大写字符串
+        /// 使用 UTF-8 编码计算文本的 SHA1 哈希。
         /// </summary>
-        /// <param name="content">需要加密字符串</param>
-        /// <returns>返回40位UTF8 大写</returns>
+        /// <param name="content">待计算哈希的文本；null 按空串处理。</param>
+        /// <returns>40 个大写十六进制字符。</returns>
         [Obsolete("SHA1 已不建议用于安全敏感场景。建议优先使用 SHA256()。")]
         public static string SHA1(string content)
         {
@@ -17,11 +17,11 @@ namespace XY.Encrypt
         }
 
         /// <summary>
-        /// SHA1 加密，返回大写字符串
+        /// 使用指定的文本编码计算 SHA1 哈希。
         /// </summary>
-        /// <param name="content">需要加密字符串</param>
-        /// <param name="encode">指定加密编码</param>
-        /// <returns>返回40位大写字符串</returns>
+        /// <param name="content">待计算哈希的文本；null 按空串处理。</param>
+        /// <param name="encode">将文本转换为字节的编码；null 时使用 UTF-8。</param>
+        /// <returns>40 个大写十六进制字符。</returns>
         [Obsolete("SHA1 已不建议用于安全敏感场景。建议优先使用 SHA256()。")]
         public static string SHA1(string content, Encoding encode)
         {
@@ -35,6 +35,9 @@ namespace XY.Encrypt
             return result.Replace("-", "");
         }
 
+        /// <summary>使用 UTF-8 编码计算文本的 SHA256 哈希。</summary>
+        /// <param name="data">待计算哈希的文本；null 按空串处理。</param>
+        /// <returns>64 个大写十六进制字符。</returns>
         public static string SHA256(string data)
         {
             data ??= string.Empty;

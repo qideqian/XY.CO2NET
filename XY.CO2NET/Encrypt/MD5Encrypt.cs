@@ -5,17 +5,17 @@ using System.Text;
 namespace XY.Encrypt
 {
     /// <summary>
-    /// 不可逆加密，限于字母和数字
+    /// 对 UTF-8 文本计算 MD5 哈希，并返回小写十六进制表示。
     /// </summary>
     public class MD5Encrypt
     {
         #region MD5
         /// <summary>
-        /// MD5加密,和动网上的16/32位MD5加密结果相同
+        /// 对 UTF-8 文本计算 MD5 哈希；null 或空串直接返回空串。
         /// </summary>
-        /// <param name="strSource">待加密字串</param>
-        /// <param name="length">16或32值之一,其它则采用.net默认MD5加密算法</param>
-        /// <returns>加密后的字串</returns>
+        /// <param name="source">待计算哈希的文本，不限于字母和数字。</param>
+        /// <param name="length">为 16 时取完整哈希十六进制表示的第 9 至 24 个字符；其他值均返回完整的 32 个字符。</param>
+        /// <returns>小写十六进制哈希字符串；输入为 null 或空串时返回空串。</returns>
         [Obsolete("MD5 已不建议用于安全敏感场景，建议改用 SHA256。")]
         public static string Encrypt(string source, int length = 32)
         {
@@ -27,7 +27,7 @@ namespace XY.Encrypt
             StringBuilder sb = new StringBuilder();
             switch (length)
             {
-                case 16://16位密文是32位密文的9到24位字符
+                case 16://取32字符十六进制哈希的第9到24个字符
                     for (int i = 4; i < 12; i++)
                         sb.Append(hashValue[i].ToString("x2"));
                     break;
@@ -49,10 +49,10 @@ namespace XY.Encrypt
         #endregion MD5
 
         /// <summary>
-        /// Md5加密（小写32位十六进制）。
+        /// 对 UTF-8 文本计算 MD5 哈希（小写 32 字符十六进制）；null 或空串直接返回空串。
         /// </summary>
-        /// <param name="input">待加密的字符串</param>
-        /// <returns>加密后的十六进制字符串</returns>
+        /// <param name="input">待计算哈希的文本。</param>
+        /// <returns>小写十六进制哈希字符串；输入为 null 或空串时返回空串。</returns>
         public static string Md5Hex(string input)
         {
             if (string.IsNullOrEmpty(input)) return string.Empty;
@@ -63,10 +63,10 @@ namespace XY.Encrypt
         }
 
         /// <summary>
-        /// 双重 Md5 加密（先对原文做 Md5Hex，再对结果做一次 Md5Hex）。
+        /// 先对原文调用 Md5Hex，再对返回的小写十六进制文本调用 Md5Hex；null 或空串直接返回空串。
         /// </summary>
-        /// <param name="input">待加密的字符串</param>
-        /// <returns>双重加密后的十六进制字符串</returns>
+        /// <param name="input">待计算哈希的文本。</param>
+        /// <returns>第二次哈希的小写十六进制字符串；输入为 null 或空串时返回空串。</returns>
         public static string Md5HexDouble(string input)
         {
             if (string.IsNullOrEmpty(input)) return string.Empty;

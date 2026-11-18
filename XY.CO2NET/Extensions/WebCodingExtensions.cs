@@ -9,7 +9,7 @@ namespace System
     public static class WebCodingExtensions
     {
         /// <summary>
-        /// 封装System.Web.HttpUtility.HtmlEncode
+        /// 定义 net48 编译符号时调用 System.Web.HttpUtility.HtmlEncode，否则调用 WebUtility.HtmlEncode。
         /// </summary>
         /// <param name="html"></param>
         /// <returns></returns>
@@ -22,7 +22,7 @@ namespace System
 #endif
         }
         /// <summary>
-        /// 封装System.Web.HttpUtility.HtmlDecode
+        /// 定义 net48 编译符号时调用 System.Web.HttpUtility.HtmlDecode，否则调用 WebUtility.HtmlDecode。
         /// </summary>
         /// <param name="html"></param>
         /// <returns></returns>

@@ -87,10 +87,12 @@ namespace XY.CO2NET.HttpUtility
         }
 
         /// <summary>
-        /// 尝试将 Base64 加载到 stream 中，会进行 Base64 检测，如果失败则返回 false
+        /// 将 Base64 解码后从目标流起始位置写入，成功后将位置重置为 0；不截断原流。
+        /// 解码、定位或写入失败时返回 false，失败前对流的修改不会回滚。
         /// </summary>
-        /// <param name="stream"></param>
-        /// <returns></returns>
+        /// <param name="stream">可定位、可写的目标流，由调用方管理其生命周期。</param>
+        /// <returns>解码、写入和重置位置全部成功时为 true，否则为 false；参数检查异常通过返回的任务传播。</returns>
+        /// <exception cref="Exceptions.FileValueException">stream 为 null，或 FileBase64 为 null、空字符串或纯空白时抛出，不转换为 false。</exception>
         public async Task<bool> TryLoadStream(Stream stream)
         {
             if (stream == null)

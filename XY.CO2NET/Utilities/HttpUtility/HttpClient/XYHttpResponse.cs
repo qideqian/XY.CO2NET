@@ -7,7 +7,8 @@ using System.Net.Http;
 namespace XY.CO2NET.HttpUtility
 {
     /// <summary>
-    /// 统一封装HttpResonse请求，提供Http请求过程中的调试、跟踪等扩展能力
+    /// 保存 HTTP 响应对象的容器；定义 net48 编译符号时使用 HttpWebResponse，否则使用 HttpResponseMessage。
+    /// 构造函数仅保存传入对象，本类不执行请求、调试或跟踪操作。
     /// </summary>
     public class XYHttpResponse
     {

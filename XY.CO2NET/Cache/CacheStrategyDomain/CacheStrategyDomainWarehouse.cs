@@ -48,11 +48,12 @@ namespace XY.CO2NET.Cache
         }
 
         /// <summary>
-        /// 获取领域缓存（指定特定 的IBaseObjectCacheStrategy 缓存策略对象）
+        /// 获取指定领域与基础缓存策略之间已登记的扩展缓存策略。
         /// </summary>
         /// <param name="baseObjectCacheStrategy">IBaseObjectCacheStrategy 缓存策略对象</param>
         /// <param name="cacheStrategyDomain">缓存领域</param>
-        /// <returns></returns>
+        /// <returns>已登记的领域扩展缓存策略实例。</returns>
+        /// <exception cref="Exceptions.UnregisteredDomainCacheStrategyException">尚未登记该领域与基础缓存策略的映射。</exception>
         public static IDomainExtensionCacheStrategy GetDomainExtensionCacheStrategy(IBaseObjectCacheStrategy baseObjectCacheStrategy,
             ICacheStrategyDomain cacheStrategyDomain)
         {
@@ -66,7 +67,7 @@ namespace XY.CO2NET.Cache
             }
             else
             {
-                //未注册，默认情况下使用本地缓存策略（应急）
+                //没有对应登记时调用日志记录并抛出未注册异常；此处不回退到本地缓存。
                 var ex = new Exceptions.UnregisteredDomainCacheStrategyException(cacheStrategyDomain.GetType(), baseObjectCacheStrategy.GetType());
                 XYTrace.BaseExceptionLog(ex);
                 throw ex;
@@ -82,19 +83,19 @@ namespace XY.CO2NET.Cache
         }
 
         /// <summary>
-        /// 自动注册领域缓存
+        /// 遍历手动提供的扩展策略，并可选反射访问已加载程序集中的扩展策略。
         /// </summary>
-        /// <param name="autoScanExtensionCacheStrategies">是否自动扫描全局的扩展缓存（会增加系统启动时间）</param>
-        /// <param name="extensionCacheStrategiesFunc"><para>需要手动注册的扩展缓存策略</para>
-        /// <para>（LocalContainerCacheStrategy、RedisContainerCacheStrategy、MemcacheContainerCacheStrategy已经自动注册），</para>
-        /// <para>如果设置为 null（注意：不适委托返回 null，是整个委托参数为 null），则自动使用反射扫描所有可能存在的扩展缓存策略</para></param>
-        ///<returns>返回所有添加的类型</returns>
+        /// <remarks>本方法不直接登记缓存映射；登记依赖实例提供器或策略初始化自身的副作用。</remarks>
+        /// <param name="autoScanExtensionCacheStrategies">是否扫描当前已加载程序集中的非抽象扩展策略类型，并尝试读取其 Instance 属性；扫描会增加启动开销。</param>
+        /// <param name="extensionCacheStrategiesFunc"><para>可选的手动策略实例提供器。</para>
+        /// <para>委托为 null 或返回 null 时跳过手动列表；是否反射扫描只由 autoScanExtensionCacheStrategies 控制。</para></param>
+        /// <returns>本次收集的手动实例类型和扫描类型，可能重复；不保证 Instance 获取成功或策略已经登记。</returns>
         public static List<Type> AutoScanDomainCacheStrategy(bool autoScanExtensionCacheStrategies = false, Func<IList<IDomainExtensionCacheStrategy>> extensionCacheStrategiesFunc = null)
         {
-            //注册扩展缓存
+            //遍历候选扩展策略，并按开关尝试反射访问。
             var dt1 = SystemTime.Now;
             var addedTypes = new List<Type>();
-            var cacheTypes = "";//所有注册的扩展缓存
+            var cacheTypes = "";//本次收集的扩展策略类型
 
             if (extensionCacheStrategiesFunc != null)
             {
@@ -103,7 +104,7 @@ namespace XY.CO2NET.Cache
                 {
                     foreach (var cacheStrategy in containerCacheStrategies)
                     {
-                        var exCache = cacheStrategy;//确保能运行到就行，会自动注册
+                        var exCache = cacheStrategy;//仅取得已提供的实例，不在此处执行登记。
 
                         var cacheType = exCache.GetType();
                         cacheTypes += "\r\n" + cacheType;

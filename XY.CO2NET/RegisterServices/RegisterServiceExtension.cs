@@ -24,11 +24,11 @@ namespace XY.CO2NET.RegisterServices
         public static bool XYGlobalServicesRegistered { get; set; }
 
         /// <summary>
-        /// 注册 IServiceCollection，并返回 RegisterService，开始注册流程（必须）
+        /// 设置全局服务集合，绑定 XYSetting 并注册 XYHttpClient
         /// </summary>
         /// <param name="serviceCollection">IServiceCollection</param>
         /// <param name="configuration">IConfiguration</param>
-        /// <returns></returns>
+        /// <returns>传入的服务集合。</returns>
         public static IServiceCollection AddXYGlobalServices(this IServiceCollection serviceCollection, IConfiguration configuration)
         {
             XYDI.GlobalServiceCollection = serviceCollection;
@@ -50,14 +50,15 @@ namespace XY.CO2NET.RegisterServices
         }
 
         /// <summary>
-        /// 注册 IServiceCollection，并返回 RegisterService，开始注册流程（必须）
+        /// 从证书文件加载客户端证书，并配置命名的 XYHttpClient
         /// </summary>
+        /// <remarks>加载或注册过程中捕获的异常会交给 XYTrace 记录，然后返回原集合；返回集合不代表证书加载成功。</remarks>
         /// <param name="serviceCollection">IServiceCollection</param>
         /// <param name="certName">证书名称，必须全局唯一，并且确保在全局 HttpClientFactory 内唯一</param>
         /// <param name="certSecret">证书密码</param>
-        /// <param name="certPath">证书路径（物理路径）</param>
-        /// <param name="checkValidationResult">设置</param>
-        /// <returns></returns>
+        /// <param name="certPath">证书物理路径；为 null、空字符串或文件不存在时跳过证书客户端配置。</param>
+        /// <param name="checkValidationResult">是否设置 RequestUtility.CheckValidationResult 作为服务器证书验证回调。</param>
+        /// <returns>传入的服务集合。</returns>
         public static IServiceCollection AddXYHttpClientWithCertificate(this IServiceCollection serviceCollection,
             string certName, string certSecret, string certPath, bool checkValidationResult = false)
         {
@@ -90,13 +91,13 @@ namespace XY.CO2NET.RegisterServices
         }
 
         /// <summary>
-        /// 注册 IServiceCollection，并返回 RegisterService，开始注册流程（必须）
+        /// 配置命名的 XYHttpClient，在创建消息处理器时添加客户端证书
         /// </summary>
         /// <param name="serviceCollection">IServiceCollection</param>
         /// <param name="certName">证书名称，必须全局唯一，并且确保在全局 HttpClientFactory 内唯一</param>
         /// <param name="cert">证书对象，也可以是 X509Certificate2</param>
-        /// <param name="checkValidationResult">设置</param>
-        /// <returns></returns>
+        /// <param name="checkValidationResult">是否设置 RequestUtility.CheckValidationResult 作为服务器证书验证回调。</param>
+        /// <returns>传入的服务集合。</returns>
         public static IServiceCollection AddXYHttpClientWithCertificate(this IServiceCollection serviceCollection,
             string certName, X509Certificate cert, bool checkValidationResult = false)
         {

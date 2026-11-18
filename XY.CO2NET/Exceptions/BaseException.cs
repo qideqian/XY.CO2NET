@@ -16,7 +16,7 @@ namespace XY.CO2NET.Exceptions
         /// BaseException 构造函数
         /// </summary>
         /// <param name="message"></param>
-        /// <param name="logged"></param>
+        /// <param name="logged">是否跳过构造时的 XYTrace 日志调用；为 false 时调用日志接口，实际记录受日志设置影响。</param>
         public BaseException(string message, bool logged = false)
             : this(message, null, logged)
         {
@@ -27,7 +27,7 @@ namespace XY.CO2NET.Exceptions
         /// </summary>
         /// <param name="message">异常消息</param>
         /// <param name="inner">内部异常信息</param>
-        /// <param name="logged">是否已经使用WeixinTrace记录日志，如果没有，BaseException会进行概要记录</param>
+        /// <param name="logged">是否跳过构造时的 XYTrace.Log 和 XYTrace.BaseExceptionLog 调用；为 false 时调用，实际记录受日志设置影响</param>
         public BaseException(string message, Exception inner, bool logged = false)
             : base(message, inner)
         {

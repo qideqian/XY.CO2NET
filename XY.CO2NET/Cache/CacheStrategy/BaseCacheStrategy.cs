@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 namespace XY.CO2NET.Cache
 {
     /// <summary>
-    /// 泛型缓存策略基类
+    /// 缓存策略基类，提供缓存键拼接及同步、异步锁接口
     /// </summary>
     public abstract class BaseCacheStrategy : IBaseCacheStrategy
     {

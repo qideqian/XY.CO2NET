@@ -10,9 +10,9 @@ namespace XY.Encrypt
     {
         #region Base64
         /// <summary>
-        /// Base64编码
+        /// 使用 Encoding.Default 将文本转换为字节，再进行 Base64 编码。
         /// </summary>
-        /// <param name="strSource">待编码字串</param>
+        /// <param name="source">待编码文本；null 不会被转换为空串。</param>
         /// <returns>编码后的字串</returns>
         public static string Encrypt(string source)
         {
@@ -21,10 +21,10 @@ namespace XY.Encrypt
         }
 
         /// <summary>
-        /// Base64解码
+        /// 将 Base64 字符串还原为字节，再使用 Encoding.Default 解码为文本。
         /// </summary>
-        /// <param name="EncValue">待解码字串</param>
-        /// <returns></returns>
+        /// <param name="EncValue">Base64 字符串；null 或无效格式由底层转换方法报告异常。</param>
+        /// <returns>使用当前运行环境默认编码得到的文本。</returns>
         public static string Decrypt(string EncValue)
         {
             byte[] outputb = Convert.FromBase64String(EncValue);

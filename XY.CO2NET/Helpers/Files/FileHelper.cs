@@ -41,10 +41,10 @@ namespace XY.CO2NET.Helpers
         }
 
         /// <summary>
-        /// 判断文件是否正在被使用
+        /// 尝试以独占方式打开已有文件；捕获打开过程中的任意异常时返回 true，不能据此区分占用与其他打开失败。
         /// </summary>
         /// <param name="filePath">文件路径</param>
-        /// <returns></returns>
+        /// <returns>File.Exists 为 false 或成功打开时为 false；捕获异常时为 true。</returns>
         public static bool FileInUse(string filePath)
         {
             try
@@ -83,9 +83,8 @@ namespace XY.CO2NET.Helpers
         /// 获取文件的 HASH 值
         /// </summary>
         /// <param name="filePath"></param>
-        /// <param name="type">SHA1 或 MD5，必须为大写</param>
+        /// <param name="type">支持精确匹配的 SHA1、MD5 或 CRC32；取得文件流后委托流重载计算。</param>
         /// <param name="toUpper">是否返回大写结果，true：大写，false：小写</param>
-        /// <param name="encoding">默认为：utf8</param>
         public static string GetFileHash(string filePath, string type = "SHA1", bool toUpper = true)
         {
             using var stream = GetFileStream(filePath);
@@ -107,7 +106,7 @@ namespace XY.CO2NET.Helpers
         /// 获取文件的 HASH 值
         /// </summary>
         /// <param name="stream"></param>
-        /// <param name="type">SHA1 或 MD5 或 CRC32，必须为大写</param>
+        /// <param name="type">SHA1、MD5 或 CRC32，按此处的大写名称精确匹配；其他值抛出 ArgumentOutOfRangeException。</param>
         /// <param name="toUpper">是否返回大写结果，true：大写，false：小写</param>
         public static string GetFileHash(Stream stream, string type = "SHA1", bool toUpper = true)
         {
@@ -134,7 +133,7 @@ namespace XY.CO2NET.Helpers
         /// 获取文件的 HASH 值
         /// </summary>
         /// <param name="bytes"></param>
-        /// <param name="type">SHA1 或 MD5 或 CRC32，必须为大写</param>
+        /// <param name="type">SHA1、MD5 或 CRC32，按此处的大写名称精确匹配；其他值抛出 ArgumentOutOfRangeException。</param>
         /// <param name="toUpper">是否返回大写结果，true：大写，false：小写</param>
         public static string GetFileHash(byte[] bytes, string type = "SHA1", bool toUpper = true)
         {

@@ -39,8 +39,9 @@ namespace XY.CO2NET
         }
 
         /// <summary>
-        /// 注册线程服务到 DI 容器（调用 ThreadUtility.Register）
+        /// 调用 ThreadUtility.Register；在线程容器为空时创建并启动后台队列线程
         /// </summary>
+        /// <returns>传入的服务集合；此方法不添加 DI 服务描述。</returns>
         public static IServiceCollection AddXYThreads(this IServiceCollection services)
         {
             ThreadUtility.Register();
@@ -80,7 +81,6 @@ namespace XY.CO2NET
         /// <summary>
         /// 修改默认缓存命名空间
         /// </summary>
-        /// <param name="registerService">RegisterService</param>
         /// <param name="customNamespace">自定义命名空间名称</param>
         /// <returns></returns>
         public static void ChangeDefaultCacheNamespace(string customNamespace)
@@ -112,32 +112,30 @@ namespace XY.CO2NET
         }
 
         /// <summary>
-        /// 开始 XY.CO2NET 初始化参数流程
+        /// 遍历手动提供的扩展缓存策略，并按开关执行反射扫描
         /// </summary>
-        /// <param name="registerService"></param>
-        /// <param name="autoScanExtensionCacheStrategies">是否自动扫描全局的扩展缓存（会增加系统启动时间）</param>
-        /// <param name="extensionCacheStrategiesFunc"><para>需要手动注册的扩展缓存策略</para>
-        /// <para>（LocalContainerCacheStrategy、RedisContainerCacheStrategy、MemcacheContainerCacheStrategy已经自动注册），</para>
-        /// <para>如果设置为 null（注意：不适委托返回 null，是整个委托参数为 null），则自动使用反射扫描所有可能存在的扩展缓存策略</para></param>
-        /// <returns></returns>
+        /// <remarks>登记依赖提供器或策略初始化的副作用；此包装器不保证策略已登记，也不返回收集到的类型列表。</remarks>
+        /// <param name="registerService">现有注册服务对象</param>
+        /// <param name="autoScanExtensionCacheStrategies">是否反射扫描已加载程序集中的扩展缓存策略类型，默认为 false；独立于手动提供器是否为 null</param>
+        /// <param name="extensionCacheStrategiesFunc">手动提供扩展缓存策略实例的委托；委托或其返回值为 null 时跳过手动列表，不会因此开启反射扫描。</param>
+        /// <returns>传入的注册服务对象。</returns>
         public static IRegisterService UseXYGlobal(this IRegisterService registerService, bool autoScanExtensionCacheStrategies = false, Func<IList<IDomainExtensionCacheStrategy>> extensionCacheStrategiesFunc = null)
         {
-            //注册扩展缓存策略
+            //遍历手动实例并按开关扫描；登记取决于提供器或策略初始化的副作用
             CacheStrategyDomainWarehouse.AutoScanDomainCacheStrategy(autoScanExtensionCacheStrategies, extensionCacheStrategiesFunc);
             return registerService;
         }
 
 #if !net48
         /// <summary>
-        /// 开始 XY.CO2NET 初始化参数流程
+        /// 创建全局注册服务、保存设置、执行可选配置回调，再处理扩展缓存策略
         /// </summary>
-        /// <param name="xySetting">XYSetting 对象</param>
+        /// <remarks>RegisterService.Start 会调用线程注册；扩展缓存策略的登记仍依赖提供器或策略初始化的副作用。</remarks>
+        /// <param name="xySetting">XYSetting 对象；为 null 时由 RegisterService 创建默认设置</param>
         /// <param name="registerConfigure">RegisterService 设置</param>
-        /// <param name="autoScanExtensionCacheStrategies">是否自动扫描全局的扩展缓存（会增加系统启动时间）</param>
-        /// <param name="extensionCacheStrategiesFunc"><para>需要手动注册的扩展缓存策略</para>
-        /// <para>（LocalContainerCacheStrategy、RedisContainerCacheStrategy、MemcacheContainerCacheStrategy已经自动注册），</para>
-        /// <para>如果设置为 null（注意：不适委托返回 null，是整个委托参数为 null），则自动使用反射扫描所有可能存在的扩展缓存策略</para></param>
-        /// <returns></returns>
+        /// <param name="autoScanExtensionCacheStrategies">是否反射扫描已加载程序集中的扩展缓存策略类型，默认为 false；独立于手动提供器是否为 null</param>
+        /// <param name="extensionCacheStrategiesFunc">手动提供扩展缓存策略实例的委托；委托或其返回值为 null 时跳过手动列表，不会因此开启反射扫描。</param>
+        /// <returns>本次创建的注册服务对象。</returns>
         public static IRegisterService UseXYGlobal(
             XYSetting xySetting,
             Action<RegisterService> registerConfigure,
